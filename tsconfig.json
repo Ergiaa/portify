@@ -1,0 +1,3 @@
+{
+  "extends": "@portify/config/tsconfig.base.json"
+}
