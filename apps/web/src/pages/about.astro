@@ -1,0 +1,463 @@
+---
+const imgLogoAsha3X12 = "https://www.figma.com/api/mcp/asset/f4fd96e1-f649-4b90-ab68-6a68e3c31e73";
+const imgVector8      = "https://www.figma.com/api/mcp/asset/22ed9f19-a131-49b9-a318-4b14555c6f1d";
+const imgVector9      = "https://www.figma.com/api/mcp/asset/66c0c452-c778-4efc-ae72-521ea9a83c7c";
+const imgSaly2        = "https://www.figma.com/api/mcp/asset/1bc3c623-23e0-4f9e-809b-c33346cd8516";
+
+const stats = [
+  { label: "Post Views",    value: "1M" },
+  { label: "Profile Views", value: "1M" },
+  { label: "Likes",         value: "1M" },
+  { label: "Comments",      value: "1M" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>About — Nasrudin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Titillium+Web:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; overflow-x: hidden; }
+      body { font-family: "Montserrat", sans-serif; }
+      a { text-decoration: none; }
+      input::placeholder, textarea::placeholder { color: #afb4bb; }
+      input:focus, textarea:focus { outline: none; border-color: #8d8fe8 !important; }
+    </style>
+  </head>
+  <body>
+
+    <!-- ░░ HERO ░░ -->
+    <section style="position: relative; background: #f97c44; overflow: hidden;">
+
+      <!-- Nav -->
+      <nav
+        aria-label="Main navigation"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: clamp(1.5rem, 3.6vw, 4.375rem) clamp(1.5rem, 7.5vw, 9rem);
+          position: relative;
+          z-index: 2;
+        "
+      >
+        <img src={imgLogoAsha3X12} alt="Logo" style="height: clamp(3.5rem, 4.8vw, 5.8rem); width: auto;" />
+        <div style="display: flex; align-items: center; gap: clamp(1.5rem, 3.6vw, 4.5rem);">
+          <a href="/"        style="color: white;   font-size: clamp(0.9rem, 1.25vw, 1.5rem);">Home</a>
+          <a href="/about"   style="color: #34366a; font-weight: 700; font-size: clamp(0.9rem, 1.25vw, 1.5rem);">About</a>
+          <a href="#projects" style="color: white;  font-size: clamp(0.9rem, 1.25vw, 1.5rem);">My projects</a>
+        </div>
+      </nav>
+
+      <!-- Hero body: photo (left) + text (right) -->
+      <div
+        style="
+          display: flex;
+          align-items: flex-end;
+          gap: clamp(2rem, 4.5vw, 5.5rem);
+          padding: 0 clamp(1.5rem, 7.5vw, 9rem) 0;
+          min-height: clamp(26rem, 44vw, 54rem);
+          position: relative;
+          z-index: 2;
+        "
+      >
+
+        <!-- Profile column: single composited PNG (pill bg + balls + portrait) -->
+        <img
+          src="/hero-portrait.png"
+          alt="Portrait of Nasrudin Mardiansyah"
+          style="
+            flex-shrink: 0;
+            align-self: flex-end;
+            width: clamp(180px, 28vw, 34rem);
+            height: auto;
+          "
+        />
+
+        <!-- Name + bio column -->
+        <div style="flex: 1; min-width: 0; padding-bottom: clamp(3rem, 5.5vw, 6.5rem);">
+          <h1
+            style="
+              color: #34366a;
+              font-weight: 700;
+              font-size: clamp(1.75rem, 3.9vw, 4.69rem);
+              line-height: 1.1;
+              margin: 0 0 clamp(0.75rem, 1.25vw, 1.5rem);
+              white-space: nowrap;
+            "
+          >
+            Nasrudin Mardiansyah
+          </h1>
+          <p
+            style="
+              color: black;
+              font-weight: 400;
+              font-size: clamp(0.875rem, 1.67vw, 2rem);
+              line-height: 1.6;
+              margin: 0;
+              max-width: clamp(20rem, 46.4vw, 55.6rem);
+            "
+          >
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ░░ ACCOUNT INSIGHTS + OVERVIEW ░░ -->
+    <!-- background switches from orange to white at exactly the SVG height (~9.2vw) -->
+    <section style="position: relative; background: linear-gradient(to bottom, #f97c44 9.2vw, white 9.2vw); overflow: hidden;">
+
+      <!-- Wave: orange → white (transparent lower-left shows the orange gradient above) -->
+      <div style="line-height: 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1939" height="173" viewBox="0 0 1939 173" fill="none" style="width: 102%; display: block; margin-left: -1%;">
+          <path d="M0 0H1939V173L0 0Z" fill="#34366A"/>
+        </svg>
+      </div>
+
+      <!-- Saly-2 3D figure (top-right, decorative) -->
+      <div
+        style="
+          position: absolute;
+          right: clamp(-8rem, -8vw, -2rem);
+          top: clamp(-6rem, -8vw, -2rem);
+          width: clamp(18rem, 52vw, 62rem);
+          pointer-events: none;
+          user-select: none;
+          z-index: 0;
+        "
+      >
+        <img
+          src={imgSaly2}
+          alt=""
+          aria-hidden="true"
+          style="width: 100%; height: auto; transform: rotate(-29.76deg); transform-origin: center;"
+        />
+      </div>
+
+      <!-- Account Insights heading -->
+      <div
+        style="
+          position: relative;
+          z-index: 1;
+          padding: clamp(4rem, 8.5vw, 10rem) clamp(1.5rem, 8.8vw, 10.5rem) clamp(3rem, 5vw, 6rem);
+        "
+      >
+        <h2
+          style="
+            color: #34366a;
+            font-weight: 800;
+            font-size: clamp(2.75rem, 7.97vw, 9.57rem);
+            line-height: 0.88;
+            margin: 0;
+            max-width: clamp(18rem, 52vw, 62.3rem);
+          "
+        >
+          Account Insights
+        </h2>
+      </div>
+
+      <!-- Overview heading + subtitle -->
+      <div
+        style="
+          position: relative;
+          z-index: 1;
+          padding: 0 clamp(1.5rem, 8.8vw, 10.5rem) clamp(1rem, 2vw, 2.5rem);
+        "
+      >
+        <h2
+          style="
+            color: #34366a;
+            font-weight: 700;
+            font-size: clamp(2.25rem, 5.96vw, 7.16rem);
+            margin: 0 0 clamp(0.25rem, 0.5vw, 0.75rem);
+          "
+        >
+          Overview
+        </h2>
+        <p
+          style="
+            color: #34366a;
+            font-weight: 400;
+            font-size: clamp(1.1rem, 2.6vw, 3.125rem);
+            margin: 0;
+          "
+        >
+          30 Days
+        </p>
+      </div>
+
+      <!-- Stats 2×2 grid -->
+      <div
+        style="
+          position: relative;
+          z-index: 1;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: clamp(1rem, 2vw, 2.5rem);
+          padding: clamp(1.5rem, 2.5vw, 3rem) clamp(1.5rem, 8.8vw, 10.5rem) clamp(4rem, 8vw, 10rem);
+          max-width: clamp(32rem, 90vw, 108rem);
+        "
+      >
+        {stats.map(({ label, value }) => (
+          <div
+            style="
+              background: white;
+              border: 2.744px solid #dedede;
+              border-radius: clamp(1.25rem, 1.71vw, 2.058rem);
+              padding: clamp(1.5rem, 2.86vw, 3.43rem);
+              display: flex;
+              flex-direction: column;
+              gap: clamp(0.35rem, 0.57vw, 0.686rem);
+            "
+          >
+            <p
+              style="
+                font-family: 'Titillium Web', sans-serif;
+                font-weight: 600;
+                font-size: clamp(1rem, 2vw, 2.4rem);
+                color: #333;
+                margin: 0;
+              "
+            >{label}</p>
+            <p
+              style="
+                font-family: 'Titillium Web', sans-serif;
+                font-weight: 700;
+                font-size: clamp(1.75rem, 3.43vw, 4.117rem);
+                color: #0077b6;
+                margin: 0;
+              "
+            >{value}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Wave: white → purple -->
+      <div style="line-height: 0; transform: scaleY(-1);">
+        <img src={imgVector9} alt="" aria-hidden="true" style="width: 102%; display: block; margin-left: -1%;" />
+      </div>
+    </section>
+
+    <!-- ░░ CONTACT ░░ -->
+    <div style="position: relative; background: #8d8fe8; overflow: hidden;">
+
+      <!-- Light footer strip behind main content -->
+      <div
+        style="
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          height: clamp(2.25rem, 3.33vw, 4rem);
+          background: #f9f9f9;
+        "
+      ></div>
+
+      <!-- Hand illustration (bottom-left) -->
+      <div
+        style="
+          position: absolute;
+          left: clamp(-5rem, -7vw, -3rem);
+          bottom: clamp(2.5rem, 5.56vw, 7rem);
+          width: clamp(14rem, 34.7vw, 41.75rem);
+          height: clamp(14rem, 34.7vw, 41.75rem);
+          pointer-events: none;
+          user-select: none;
+          z-index: 1;
+        "
+      >
+        <img
+          src="/hand-give.png"
+          alt=""
+          aria-hidden="true"
+          style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;"
+        />
+      </div>
+
+      <!-- Main content row -->
+      <div
+        style="
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: flex-start;
+          gap: clamp(2rem, 4vw, 5rem);
+          padding: clamp(3.5rem, 8.6vw, 10.375rem) clamp(1.5rem, 8.5vw, 10rem) clamp(4rem, 7vw, 8.5rem);
+        "
+      >
+
+        <!-- Left: Say Hello! -->
+        <div style="flex-shrink: 0; width: 36%; padding-top: clamp(0.5rem, 1vw, 1.5rem);">
+          <h2
+            style="
+              color: #fdcec3;
+              font-weight: 700;
+              font-size: clamp(3rem, 6.67vw, 8rem);
+              line-height: 1.05;
+              margin: 0 0 clamp(2rem, 5.56vw, 6.625rem);
+            "
+          >
+            Say<br />Hello!
+          </h2>
+          <p
+            style="
+              color: white;
+              font-weight: 400;
+              font-size: clamp(0.9rem, 1.46vw, 1.75rem);
+              line-height: 1.6;
+              margin: 0 0 clamp(1.25rem, 2.34vw, 2.8125rem);
+              max-width: clamp(16rem, 22.3vw, 26.8rem);
+            "
+          >
+            Have something to ask? don't be afraid to tell me, Let's get in touch
+          </p>
+
+          <!-- Social icons -->
+          <div style="display: flex; align-items: center; gap: clamp(0.75rem, 1.2vw, 1.5625rem);">
+            <a href="https://www.instagram.com/shugora/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <img src="/social-instagram.png" alt="" style="width: clamp(2rem, 2.66vw, 3.1875rem); height: clamp(2rem, 2.66vw, 3.1875rem); object-fit: contain; display: block;" />
+            </a>
+            <a href="https://www.linkedin.com/in/putri-salsabilla-a6bb31203" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <img src="/social-linkedin.png" alt="" style="width: clamp(1.75rem, 2.3vw, 2.75rem); height: clamp(1.75rem, 2.3vw, 2.75rem); object-fit: contain; display: block;" />
+            </a>
+            <a href="https://www.youtube.com/shugorakireina" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <img src="/social-youtube.png" alt="" style="width: clamp(2rem, 2.6vw, 3.125rem); height: clamp(2rem, 2.6vw, 3.125rem); object-fit: contain; display: block;" />
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Contact Me form card -->
+        <div
+          style="
+            flex: 1;
+            background: #34366a;
+            border-radius: clamp(2rem, 3.28vw, 3.9375rem);
+            padding: clamp(1.5rem, 3.125vw, 3.75rem) clamp(1.5rem, 3.9vw, 4.6875rem) clamp(2rem, 4.58vw, 5.5rem);
+          "
+        >
+          <h3
+            style="
+              color: white;
+              font-weight: 700;
+              font-size: clamp(1.75rem, 3.91vw, 4.6875rem);
+              margin: 0 0 clamp(1.25rem, 2.6vw, 3.125rem);
+            "
+          >
+            Contact Me
+          </h3>
+
+          <form action="#" method="POST" novalidate>
+
+            <!-- Name + Email row -->
+            <div style="display: flex; gap: clamp(0.75rem, 1.4vw, 1.75rem); margin-bottom: clamp(0.75rem, 1.15vw, 1.375rem);">
+              <input
+                type="text"
+                name="name"
+                placeholder="Name"
+                style="
+                  flex: 31; min-width: 0;
+                  background: white; border: 2px solid #e0e0e0; border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem); color: #1a1a1a;
+                "
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                style="
+                  flex: 66; min-width: 0;
+                  background: white; border: 2px solid #e0e0e0; border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem); color: #1a1a1a;
+                "
+              />
+            </div>
+
+            <!-- Topic -->
+            <div style="margin-bottom: clamp(0.75rem, 1.15vw, 1.375rem);">
+              <input
+                type="text"
+                name="topic"
+                placeholder="Topic"
+                style="
+                  width: 100%;
+                  background: white; border: 2px solid #e0e0e0; border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem); color: #1a1a1a;
+                "
+              />
+            </div>
+
+            <!-- Message -->
+            <div style="margin-bottom: clamp(1.5rem, 2.6vw, 3.25rem);">
+              <textarea
+                name="message"
+                placeholder="What do you wanna tell me?"
+                rows="6"
+                style="
+                  width: 100%;
+                  background: white; border: 2px solid #e0e0e0; border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem); color: #1a1a1a;
+                  resize: none;
+                "
+              ></textarea>
+            </div>
+
+            <!-- Send button -->
+            <div style="display: flex; justify-content: center;">
+              <button
+                type="submit"
+                style="
+                  background: #f97c44; color: white; border: none; cursor: pointer;
+                  font-family: 'Montserrat', sans-serif;
+                  font-weight: 500; font-size: clamp(0.9rem, 1.3vw, 1.5625rem);
+                  padding: clamp(0.875rem, 1.2vw, 1.4375rem) clamp(2.5rem, 5.2vw, 6.25rem);
+                  border-radius: 56px; white-space: nowrap;
+                "
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          position: relative; z-index: 2;
+          background: #f9f9f9;
+          padding: clamp(0.5rem, 0.9vw, 1.1rem) clamp(1.5rem, 8.5vw, 10rem);
+          display: flex; align-items: center;
+          gap: clamp(0.4rem, 0.6vw, 0.75rem);
+          font-size: clamp(0.65rem, 0.89vw, 1.0625rem);
+          font-weight: 300; color: black;
+        "
+      >
+        <span>Copyright 2021 Putri Salsabilla Insani</span>
+        <span aria-hidden="true" style="color: #ccc;">|</span>
+        <span>All Right Reserved</span>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,55 +1,241 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { orpc } from "../lib/orpc";
+import "../styles/global.css";
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
+const imgGroup2            = "https://www.figma.com/api/mcp/asset/d08662f5-16ec-44a7-8754-88df39b6b36c";
+const imgImage12           = "/hand.png";
+const imgImage13           = "https://www.figma.com/api/mcp/asset/d8bdb093-241c-4eac-86ca-d30eb97975e8";
+const imgImage14           = "https://www.figma.com/api/mcp/asset/c33153f1-358c-4c63-9919-198bb1139358";
+const imgImage15           = "https://www.figma.com/api/mcp/asset/2c1fb9c2-567e-444f-8368-be3c67e3bc7e";
+const imgInstagramLogo     = "https://www.figma.com/api/mcp/asset/33c9ccdb-48db-4572-a363-589f57344077";
+const imgLinkedIn          = "https://www.figma.com/api/mcp/asset/2fd9fbf2-b0cc-4328-a85f-d6d7e7dbd9e6";
+const imgYouTubePlayButton = "https://www.figma.com/api/mcp/asset/9f2b3a8a-80b6-4c30-9d6e-7b0fafc1b52d";
+// const imgIcel1             = "https://www.figma.com/api/mcp/asset/583cf2d6-eff6-4e41-91ba-b9d571d22c2d";
+const imgIcel2             = "https://www.figma.com/api/mcp/asset/33306351-1fa8-47e8-b485-de6a89653a92";
 ---
 
-<Layout title="portify">
-  <div class="container mx-auto max-w-3xl px-4 py-2">
-    <pre class="overflow-x-auto font-mono text-sm text-white">{TITLE_TEXT}</pre>
-    <div class="grid gap-6">
-      <section class="rounded-lg border border-neutral-700 p-4">
-        <h2 class="mb-2 font-medium text-white">API Status</h2>
-        <div class="flex items-center gap-2" id="api-status">
-          <div class="h-2 w-2 rounded-full bg-orange-400" id="status-dot"></div>
-          <span class="text-sm text-neutral-400" id="status-text">Checking...</span>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Nasrudin — Film Reviewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      html { overflow-x: hidden; }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Montserrat", sans-serif;
+        background-color: #f0f5fc;
+        overflow-x: hidden;
+      }
+      a { text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div style="position: relative;">
+
+      <!-- Hero section container -->
+      <div style="position: relative; overflow: visible;">
+        <!-- Hero background blob + wave -->
+        <img
+          src={imgGroup2}
+          alt=""
+          aria-hidden="true"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: bottom left; z-index: 0; pointer-events: none; user-select: none;"
+        />
+
+      <!-- 3D hand (right side of hero) -->
+      <div
+        style="
+          position: absolute;
+          right: -15vw;
+          bottom: 20vw;
+          width: 60vw;
+          height: 60vw;
+          z-index: 1;
+          display: flex;
+          align-items: flex-end;
+          justify-content: flex-end;
+          pointer-events: none;
+          user-select: none;
+          overflow: visible;
+        "
+      >
+        <img
+          src={imgImage12}
+          alt=""
+          aria-hidden="true"
+          style="
+            width: 70vw;
+            height: auto;
+            flex-shrink: 0;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- Hero content -->
+      <div
+        style="
+          position: relative;
+          z-index: 2;
+          min-height: 56.25vw;
+          padding-left: clamp(1.5rem, 8.5vw, 10rem);
+          padding-right: clamp(1.5rem, 8.5vw, 10rem);
+        "
+      >
+        <!-- Nav -->
+        <nav
+          style="display: flex; align-items: center; justify-content: space-between; padding-top: clamp(2rem, 3.6vw, 5rem);"
+          aria-label="Main navigation"
+        >
+          <img src={imgImage15} alt="Logo" style="height: clamp(4rem, 5.8vw, 7rem); width: auto;" />
+          <div style="display: flex; align-items: center; gap: clamp(1.5rem, 3.6vw, 4.5rem);">
+            <a href="#"         style="color: #f97c44; font-weight: 700; font-size: clamp(0.9rem, 1.25vw, 1.5rem);">Home</a>
+            <a href="/about"    style="color: white;   font-size: clamp(0.9rem, 1.25vw, 1.5rem);">About</a>
+            <a href="#projects" style="color: white;   font-size: clamp(0.9rem, 1.25vw, 1.5rem);">My projects</a>
+          </div>
+        </nav>
+
+        <!-- Hero copy -->
+          <div style="max-width: min(60%, 800px); padding-top: clamp(4rem, 8vw, 10rem); padding-bottom: 29rem;">
+          <p style="color: white; font-weight: 700; font-size: clamp(1.5rem, 2.86vw, 3.5rem); margin: 0 0 0.2rem;">
+            Hey There!
+          </p>
+          <h1 style="color: white; font-weight: 700; font-size: clamp(2.5rem, 5.96vw, 7.15rem); line-height: 1.05; margin: 0 0 0.4rem; white-space: nowrap;">
+            I'm Nasrudin
+          </h1>
+          <p style="color: white; font-weight: 400; font-size: clamp(1.2rem, 2.45vw, 3rem); margin: 0 0 2.5rem;">
+            I review films!
+          </p>
+
+          <!-- CTA buttons -->
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(1rem, 2vw, 2rem); margin-bottom: 2.5rem;">
+            <a href="/hire-me" style="
+              background: #f97c44; color: white; border: none; cursor: pointer;
+              font-family: inherit; font-weight: 400; font-size: clamp(0.9rem, 1.25vw, 1.5rem);
+              padding: clamp(0.8rem, 1.1vw, 1.25rem) clamp(2rem, 3.6vw, 4.5rem);
+              border-radius: 22px; white-space: nowrap; text-decoration: none; display: inline-block;
+            ">
+              Hire me
+            </a>
+            <button style="
+              background: transparent; color: white; cursor: pointer;
+              font-family: inherit; font-weight: 400; font-size: clamp(0.9rem, 1.25vw, 1.5rem);
+              padding: clamp(0.75rem, 1.05vw, 1.2rem) clamp(1.5rem, 2.9vw, 3.5rem);
+              border: 3px solid white; border-radius: 22px; white-space: nowrap;
+            ">
+              See my work
+            </button>
+          </div>
+
+          <!-- Social icons -->
+          <div style="display: flex; align-items: center; gap: clamp(1rem, 1.5vw, 2rem);">
+            <a href="https://www.instagram.com/shugora/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <img src={imgInstagramLogo} alt="" style="width: clamp(2.5rem, 3.2vw, 3.875rem); height: clamp(2.5rem, 3.2vw, 3.875rem); object-fit: cover;" />
+            </a>
+            <a href="https://www.linkedin.com/in/putri-salsabilla-a6bb31203" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <img src={imgLinkedIn} alt="" style="width: clamp(2.2rem, 2.76vw, 3.3rem); height: clamp(2.2rem, 2.76vw, 3.3rem); object-fit: cover;" />
+            </a>
+            <a href="https://www.youtube.com/shugorakireina" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <img src={imgYouTubePlayButton} alt="" style="width: clamp(2.4rem, 3.1vw, 3.75rem); height: clamp(2.4rem, 3.1vw, 3.75rem); object-fit: cover;" />
+            </a>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- About section -->
+      <section
+        id="about"
+        style="
+          position: relative;
+          z-index: 2;
+          padding: clamp(4rem, 13vw, 16rem) clamp(1.5rem, 8.5vw, 10rem) clamp(4rem, 6vw, 8rem);
+        "
+      >
+        <div style="display: flex; align-items: center; gap: clamp(2rem, 5vw, 6rem); max-width: 90rem; margin: 0 auto;">
+
+          <!-- Left: circular photo with mask + decorations -->
+          <div style="position: relative; flex-shrink: 0; width: clamp(180px, 23vw, 320px); height: clamp(280px, 36vw, 460px);">
+
+            <!-- Photo masked to circle via icel1 -->
+            <div style="
+              position: absolute;
+              top: clamp(1.5rem, 3vw, 3.5rem);
+              left: 0;
+              width: clamp(180px, 23vw, 300px);
+              height: clamp(180px, 23vw, 300px);
+              border-radius: 50%;
+              overflow: hidden;
+            ">
+              <img
+                src={imgIcel2}
+                alt="Portrait of Nasrudin"
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
+            </div>
+
+            <!-- Spring decoration (top-right) -->
+            <img
+              src={imgImage13}
+              alt=""
+              aria-hidden="true"
+              style="
+                position: absolute;
+                top: clamp(-1.5rem, -2vw, -1rem);
+                right: clamp(-2rem, -3vw, -1.5rem);
+                width: clamp(130px, 15vw, 220px);
+                height: clamp(130px, 15vw, 220px);
+                z-index: 10;
+                pointer-events: none;
+              "
+            />
+
+            <!-- Orange ring (bottom-left) -->
+            <img
+              src={imgImage14}
+              alt=""
+              aria-hidden="true"
+              style="
+                position: absolute;
+                bottom: 0;
+                left: clamp(-1.5rem, -2vw, -1rem);
+                width: clamp(110px, 13vw, 190px);
+                height: clamp(105px, 12.5vw, 180px);
+                z-index: 10;
+                pointer-events: none;
+              "
+            />
+          </div>
+
+          <!-- Right: text -->
+          <div style="flex: 1; min-width: 0;">
+            <h2 style="color: #34366a; font-weight: 700; font-size: clamp(2rem, 3.9vw, 4.7rem); line-height: 1; margin: 0 0 1.2rem;">
+              About me
+            </h2>
+            <p style="color: #1a1a1a; font-weight: 400; font-size: clamp(1rem, 1.67vw, 2rem); line-height: 1.6; max-width: 56rem; margin: 0 0 2rem;">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+              exercitation ullamco laboris nisi
+            </p>
+            <a href="/about" style="color: #f97c44; font-weight: 700; font-size: clamp(1rem, 1.35vw, 1.625rem);">
+              See more
+            </a>
+          </div>
+
         </div>
       </section>
+
     </div>
-  </div>
-</Layout>
-
-<script>
-  import { orpc } from "../lib/orpc";
-
-  const statusDot = document.getElementById("status-dot")!;
-  const statusText = document.getElementById("status-text")!;
-
-  async function checkHealth() {
-    try {
-      const data = await orpc.healthCheck();
-      statusDot.className = "h-2 w-2 rounded-full bg-green-500";
-      statusText.textContent = "Connected";
-    } catch (error) {
-      statusDot.className = "h-2 w-2 rounded-full bg-red-500";
-      statusText.textContent = "Disconnected";
-    }
-  }
-
-  checkHealth();
-</script>
+  </body>
+</html>

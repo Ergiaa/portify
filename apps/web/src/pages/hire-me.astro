@@ -1,0 +1,320 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Hire Me — Nasrudin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; overflow-x: hidden; }
+      body { font-family: "Montserrat", sans-serif; }
+      a { text-decoration: none; }
+      input::placeholder, textarea::placeholder { color: #afb4bb; }
+      input:focus, textarea:focus { outline: none; border-color: #8d8fe8 !important; }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        position: relative;
+        background: #8d8fe8;
+        width: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+      "
+    >
+      <!-- Light footer strip behind content -->
+      <div
+        style="
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: clamp(2.25rem, 3.33vw, 4rem);
+          background: #f9f9f9;
+        "
+      ></div>
+
+      <!-- Back button -->
+      <a
+        href="/"
+        aria-label="Back to home"
+        style="
+          position: absolute;
+          top: clamp(1.25rem, 2.29vw, 2.75rem);
+          left: clamp(1.25rem, 2.29vw, 2.75rem);
+          width: clamp(2.25rem, 3.8vw, 4.5625rem);
+          height: clamp(2.25rem, 3.8vw, 4.5625rem);
+          display: block;
+          z-index: 10;
+        "
+      >
+        <img
+          src="/back-arrow.png"
+          alt=""
+          aria-hidden="true"
+          style="width: 100%; height: 100%; object-fit: contain;"
+        />
+      </a>
+
+      <!-- Hand illustration (bottom-left, partially off-screen) -->
+      <div
+        style="
+          position: absolute;
+          left: clamp(-5rem, -7vw, -3rem);
+          bottom: clamp(2.5rem, 5.56vw, 7rem);
+          width: clamp(14rem, 34.7vw, 41.75rem);
+          height: clamp(14rem, 34.7vw, 41.75rem);
+          pointer-events: none;
+          user-select: none;
+          z-index: 1;
+        "
+      >
+        <!-- <img -->
+        <!--   src="/hand-sleeve.png" -->
+        <!--   alt="" -->
+        <!--   aria-hidden="true" -->
+        <!--   style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;" -->
+        <!-- /> -->
+        <img
+          src="/hand-give.png"
+          alt=""
+          aria-hidden="true"
+          style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;"
+        />
+      </div>
+
+      <!-- Main content -->
+      <div
+        style="
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: flex-start;
+          gap: clamp(2rem, 4vw, 5rem);
+          padding: clamp(3.5rem, 8.6vw, 10.375rem) clamp(1.5rem, 8.5vw, 10rem) clamp(4rem, 7vw, 8.5rem);
+          min-height: calc(100vh - clamp(2.25rem, 3.33vw, 4rem));
+        "
+      >
+        <!-- Left: Say Hello! -->
+        <div style="flex-shrink: 0; width: 36%; padding-top: clamp(0.5rem, 1vw, 1.5rem);">
+          <h1
+            style="
+              color: #fdcec3;
+              font-weight: 700;
+              font-size: clamp(3rem, 6.67vw, 8rem);
+              line-height: 1.05;
+              margin: 0 0 clamp(2rem, 5.56vw, 6.625rem);
+            "
+          >
+            Say<br />Hello!
+          </h1>
+          <p
+            style="
+              color: white;
+              font-weight: 400;
+              font-size: clamp(0.9rem, 1.46vw, 1.75rem);
+              line-height: 1.6;
+              margin: 0 0 clamp(1.25rem, 2.34vw, 2.8125rem);
+              max-width: clamp(16rem, 22.3vw, 26.8125rem);
+            "
+          >
+            Have something to ask? don't be afraid to tell me, Let's get in touch
+          </p>
+
+          <!-- Social icons -->
+          <div style="display: flex; align-items: center; gap: clamp(0.75rem, 1.2vw, 1.5625rem);">
+            <a
+              href="https://www.instagram.com/shugora/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <img
+                src="/social-instagram.png"
+                alt=""
+                style="width: clamp(2rem, 2.66vw, 3.1875rem); height: clamp(2rem, 2.66vw, 3.1875rem); object-fit: contain; display: block;"
+              />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/putri-salsabilla-a6bb31203"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <img
+                src="/social-linkedin.png"
+                alt=""
+                style="width: clamp(1.75rem, 2.3vw, 2.75rem); height: clamp(1.75rem, 2.3vw, 2.75rem); object-fit: contain; display: block;"
+              />
+            </a>
+            <a
+              href="https://www.youtube.com/shugorakireina"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+            >
+              <img
+                src="/social-youtube.png"
+                alt=""
+                style="width: clamp(2rem, 2.6vw, 3.125rem); height: clamp(2rem, 2.6vw, 3.125rem); object-fit: contain; display: block;"
+              />
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Contact form card -->
+        <div
+          style="
+            flex: 1;
+            background: #34366a;
+            border-radius: clamp(2rem, 3.28vw, 3.9375rem);
+            padding: clamp(1.5rem, 3.125vw, 3.75rem) clamp(1.5rem, 3.9vw, 4.6875rem) clamp(2rem, 4.58vw, 5.5rem);
+          "
+        >
+          <h2
+            style="
+              color: white;
+              font-weight: 700;
+              font-size: clamp(1.75rem, 3.91vw, 4.6875rem);
+              margin: 0 0 clamp(1.25rem, 2.6vw, 3.125rem);
+            "
+          >
+            Contact Me
+          </h2>
+
+          <form action="#" method="POST" novalidate>
+            <!-- Name + Email row -->
+            <div
+              style="display: flex; gap: clamp(0.75rem, 1.4vw, 1.75rem); margin-bottom: clamp(0.75rem, 1.15vw, 1.375rem);"
+            >
+              <input
+                type="text"
+                name="name"
+                placeholder="Name"
+                style="
+                  flex: 31;
+                  min-width: 0;
+                  background: white;
+                  border: 2px solid #e0e0e0;
+                  border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem);
+                  color: #1a1a1a;
+                "
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                style="
+                  flex: 66;
+                  min-width: 0;
+                  background: white;
+                  border: 2px solid #e0e0e0;
+                  border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem);
+                  color: #1a1a1a;
+                "
+              />
+            </div>
+
+            <!-- Topic -->
+            <div style="margin-bottom: clamp(0.75rem, 1.15vw, 1.375rem);">
+              <input
+                type="text"
+                name="topic"
+                placeholder="Topic"
+                style="
+                  width: 100%;
+                  background: white;
+                  border: 2px solid #e0e0e0;
+                  border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem);
+                  color: #1a1a1a;
+                "
+              />
+            </div>
+
+            <!-- Message -->
+            <div style="margin-bottom: clamp(1.5rem, 2.6vw, 3.25rem);">
+              <textarea
+                name="message"
+                placeholder="What do you wanna tell me?"
+                rows="6"
+                style="
+                  width: 100%;
+                  background: white;
+                  border: 2px solid #e0e0e0;
+                  border-radius: 10px;
+                  padding: clamp(0.75rem, 1.2vw, 1.4375rem) clamp(0.75rem, 1.25vw, 1.5625rem);
+                  font-family: 'Montserrat', sans-serif;
+                  font-size: clamp(0.8rem, 1.3vw, 1.5625rem);
+                  color: #1a1a1a;
+                  resize: none;
+                "
+              ></textarea>
+            </div>
+
+            <!-- Send button -->
+            <div style="display: flex; justify-content: center;">
+              <button
+                type="submit"
+                style="
+                  background: #f97c44;
+                  color: white;
+                  border: none;
+                  cursor: pointer;
+                  font-family: 'Montserrat', sans-serif;
+                  font-weight: 500;
+                  font-size: clamp(0.9rem, 1.3vw, 1.5625rem);
+                  padding: clamp(0.875rem, 1.2vw, 1.4375rem) clamp(2.5rem, 5.2vw, 6.25rem);
+                  border-radius: 56px;
+                  white-space: nowrap;
+                "
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          position: relative;
+          z-index: 2;
+          background: #f9f9f9;
+          padding: clamp(0.5rem, 0.9vw, 1.1rem) clamp(1.5rem, 8.5vw, 10rem);
+          display: flex;
+          align-items: center;
+          gap: clamp(0.4rem, 0.6vw, 0.75rem);
+          font-size: clamp(0.65rem, 0.89vw, 1.0625rem);
+          font-weight: 300;
+          color: black;
+        "
+      >
+        <span>Copyright 2021 Putri Salsabilla Insani</span>
+        <span aria-hidden="true" style="color: #ccc;">|</span>
+        <span>All Right Reserved</span>
+      </div>
+    </div>
+  </body>
+</html>

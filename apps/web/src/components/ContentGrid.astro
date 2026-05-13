@@ -1,0 +1,220 @@
+---
+interface ContentItem {
+  id: string;
+  title: string;
+  description: string | null;
+  type: "video" | "article" | "podcast" | "design";
+  platform: "tiktok" | "instagram" | "youtube" | null;
+  thumbnailUrl: string | null;
+  externalUrl: string | null;
+  publishedAt: Date | null;
+}
+
+interface Props {
+  items: ContentItem[];
+}
+
+const { items } = Astro.props;
+
+const typeEmoji: Record<ContentItem["type"], string> = {
+  video: "🎬",
+  article: "📝",
+  podcast: "🎙️",
+  design: "🎨",
+};
+
+const typeBadgeClass: Record<ContentItem["type"], string> = {
+  video: "bg-blue-500/20 text-blue-300",
+  article: "bg-green-500/20 text-green-300",
+  podcast: "bg-purple-500/20 text-purple-300",
+  design: "bg-orange-500/20 text-orange-300",
+};
+
+const typePlaceholderBg: Record<ContentItem["type"], string> = {
+  video: "bg-blue-900/40",
+  article: "bg-green-900/40",
+  podcast: "bg-purple-900/40",
+  design: "bg-orange-900/40",
+};
+
+const filterTypes = ["all", "video", "article", "podcast", "design"] as const;
+---
+
+<style>
+  [data-filter-btn].active-filter {
+    color: white;
+    border-bottom-color: white;
+    background: transparent;
+  }
+</style>
+
+<!-- Filter tabs -->
+<div class="border-b border-neutral-800 mb-10 flex gap-1">
+  {
+    filterTypes.map((type) => (
+      <button
+        data-filter-btn={type}
+        class:list={[
+          "px-3 py-2 text-sm font-medium rounded-t text-neutral-500 hover:text-neutral-300 cursor-pointer border-b-2 border-transparent transition-colors -mb-px",
+          type === "all" && "active-filter",
+        ]}
+      >
+        {type.charAt(0).toUpperCase() + type.slice(1)}
+      </button>
+    ))
+  }
+</div>
+
+<!-- Empty state -->
+{items.length === 0 && (
+  <div class="flex flex-col items-center text-center py-24 text-neutral-500">
+    <p class="text-5xl mb-4">🎬</p>
+    <p class="text-lg">No content yet.<br />Check back soon.</p>
+  </div>
+)}
+
+<!-- Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {
+    items.map((item) =>
+      item.externalUrl ? (
+        <a
+          href={item.externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-type={item.type}
+          class="group relative bg-neutral-900/60 rounded-2xl overflow-hidden border border-neutral-800/60 hover:border-neutral-700 transition-all duration-200 hover:shadow-xl hover:shadow-black/30"
+        >
+          {/* Thumbnail */}
+          <div class="aspect-video w-full overflow-hidden">
+            {item.thumbnailUrl ? (
+              <img
+                src={item.thumbnailUrl}
+                alt={item.title}
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div
+                class:list={[
+                  "relative w-full h-full flex items-center justify-center text-4xl",
+                  typePlaceholderBg[item.type],
+                ]}
+                style="background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 20px 20px;"
+              >
+                {typeEmoji[item.type]}
+              </div>
+            )}
+          </div>
+
+          {/* Card body */}
+          <div class="p-5">
+            <p class="font-semibold text-white text-sm leading-snug mb-2 group-hover:text-white transition-colors">
+              {item.title}
+            </p>
+            {item.description && (
+              <p class="text-neutral-500 text-xs leading-relaxed mb-3 line-clamp-2">
+                {item.description}
+              </p>
+            )}
+            <div class="flex flex-wrap gap-2 items-center">
+              <span
+                class:list={[
+                  "px-2 py-0.5 rounded-full text-xs font-medium capitalize",
+                  typeBadgeClass[item.type],
+                ]}
+              >
+                {item.type}
+              </span>
+              {item.platform && (
+                <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-800 text-neutral-400">
+                  {item.platform}
+                </span>
+              )}
+            </div>
+            {item.publishedAt && (
+              <span class="text-neutral-600 text-xs mt-3 block">
+                {item.publishedAt.toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+              </span>
+            )}
+          </div>
+        </a>
+      ) : (
+        <div
+          data-type={item.type}
+          class="group relative bg-neutral-900/60 rounded-2xl overflow-hidden border border-neutral-800/60 hover:border-neutral-700 transition-all duration-200 hover:shadow-xl hover:shadow-black/30"
+        >
+          {/* Thumbnail */}
+          <div class="aspect-video w-full overflow-hidden">
+            {item.thumbnailUrl ? (
+              <img
+                src={item.thumbnailUrl}
+                alt={item.title}
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div
+                class:list={[
+                  "relative w-full h-full flex items-center justify-center text-4xl",
+                  typePlaceholderBg[item.type],
+                ]}
+                style="background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 20px 20px;"
+              >
+                {typeEmoji[item.type]}
+              </div>
+            )}
+          </div>
+
+          {/* Card body */}
+          <div class="p-5">
+            <p class="font-semibold text-white text-sm leading-snug mb-2 group-hover:text-white transition-colors">
+              {item.title}
+            </p>
+            {item.description && (
+              <p class="text-neutral-500 text-xs leading-relaxed mb-3 line-clamp-2">
+                {item.description}
+              </p>
+            )}
+            <div class="flex flex-wrap gap-2 items-center">
+              <span
+                class:list={[
+                  "px-2 py-0.5 rounded-full text-xs font-medium capitalize",
+                  typeBadgeClass[item.type],
+                ]}
+              >
+                {item.type}
+              </span>
+              {item.platform && (
+                <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-800 text-neutral-400">
+                  {item.platform}
+                </span>
+              )}
+            </div>
+            {item.publishedAt && (
+              <span class="text-neutral-600 text-xs mt-3 block">
+                {item.publishedAt.toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+              </span>
+            )}
+          </div>
+        </div>
+      )
+    )
+  }
+</div>
+
+<script>
+  const buttons = document.querySelectorAll("[data-filter-btn]");
+  const cards = document.querySelectorAll("[data-type]");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const filter = (btn as HTMLElement).dataset.filterBtn;
+      buttons.forEach((b) => b.classList.remove("active-filter"));
+      btn.classList.add("active-filter");
+      cards.forEach((card) => {
+        (card as HTMLElement).style.display =
+          filter === "all" || (card as HTMLElement).dataset.type === filter
+            ? ""
+            : "none";
+      });
+    });
+  });
+</script>
