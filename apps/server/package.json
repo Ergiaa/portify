@@ -7,6 +7,8 @@
     "check-types": "tsc -b",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "bun run --hot src/index.ts",
+    "seed:content": "bun --env-file .env scripts/seed-content.ts",
+    "seed:owner": "bun --env-file .env scripts/seed-owner.ts",
     "start": "bun run dist/index.mjs"
   },
   "dependencies": {
@@ -15,6 +17,7 @@
     "@orpc/zod": "catalog:",
     "@portify/api": "workspace:*",
     "@portify/db": "workspace:*",
+    "drizzle-orm": "^0.45.1",
     "@portify/env": "workspace:*",
     "dotenv": "catalog:",
     "hono": "catalog:",
