@@ -18,6 +18,8 @@
     "@portify/db": "workspace:*",
     "@portify/env": "workspace:*",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
+    "jose": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
