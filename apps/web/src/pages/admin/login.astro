@@ -1,0 +1,250 @@
+---
+if (Astro.cookies.has("auth_token")) {
+  return Astro.redirect("/admin");
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in — Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        min-height: 100svh;
+        background-color: #09090b;
+        background-image:
+          radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.12) 0%, transparent 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #fafafa;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 360px;
+      }
+
+      /* Brand */
+      .brand {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+      .brand-mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 0 32px rgba(99,102,241,0.3);
+      }
+      .brand-mark svg {
+        width: 22px;
+        height: 22px;
+        fill: white;
+      }
+      .brand-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #71717a;
+      }
+
+      /* Card */
+      .card {
+        background: #18181b;
+        border: 1px solid #27272a;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.03) inset,
+          0 4px 6px -1px rgba(0,0,0,0.4),
+          0 20px 40px -8px rgba(0,0,0,0.5);
+      }
+
+      .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #fafafa;
+        margin-bottom: 0.25rem;
+      }
+      .card-subtitle {
+        font-size: 0.8125rem;
+        color: #71717a;
+        margin-bottom: 1.75rem;
+      }
+
+      /* Form */
+      .field {
+        margin-bottom: 1.125rem;
+      }
+      label {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: #a1a1aa;
+        margin-bottom: 0.4rem;
+      }
+      input {
+        width: 100%;
+        background: #09090b;
+        border: 1px solid #27272a;
+        border-radius: 8px;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.875rem;
+        color: #fafafa;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        font-family: inherit;
+      }
+      input::placeholder { color: #3f3f46; }
+      input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+      }
+
+      /* Error */
+      .error {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(239,68,68,0.08);
+        border: 1px solid rgba(239,68,68,0.2);
+        border-radius: 8px;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.8125rem;
+        color: #f87171;
+        margin-bottom: 1.25rem;
+      }
+      .error.visible { display: flex; }
+
+      /* Button */
+      .btn {
+        width: 100%;
+        background: #fafafa;
+        color: #09090b;
+        border: none;
+        border-radius: 8px;
+        padding: 0.65rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 0.15s, opacity 0.15s, transform 0.1s;
+        margin-top: 0.5rem;
+      }
+      .btn:hover { background: #e4e4e7; }
+      .btn:active { transform: scale(0.99); }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        color: #3f3f46;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+
+      <div class="brand">
+        <div class="brand-mark">
+          <!-- Simple "A" lettermark -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 20h4l1.5-4h9l1.5 4h4L12 2zm-3.2 11L12 6l3.2 7H8.8z"/>
+          </svg>
+        </div>
+        <div class="brand-name">Archtype</div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">Welcome back</p>
+        <p class="card-subtitle">Sign in to manage your portfolio.</p>
+
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input
+              id="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div id="error-msg" class="error">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4.5zm0 7a.875.875 0 1 1 0-1.75.875.875 0 0 1 0 1.75z"/>
+            </svg>
+            Invalid email or password.
+          </div>
+
+          <button id="submit-btn" class="btn" type="submit">Sign in</button>
+        </form>
+      </div>
+
+      <p class="footer">Admin access only &mdash; no public registration.</p>
+    </div>
+
+    <script>
+      import { orpc } from "../../lib/orpc";
+
+      const form = document.getElementById("login-form") as HTMLFormElement;
+      const emailInput = document.getElementById("email") as HTMLInputElement;
+      const passwordInput = document.getElementById("password") as HTMLInputElement;
+      const errorMsg = document.getElementById("error-msg") as HTMLDivElement;
+      const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorMsg.classList.remove("visible");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Signing in…";
+
+        try {
+          const { token } = await orpc.auth.login({
+            email: emailInput.value,
+            password: passwordInput.value,
+          });
+          const maxAge = 7 * 24 * 60 * 60;
+          document.cookie = `auth_token=${token}; path=/; max-age=${maxAge}; SameSite=Strict`;
+          window.location.href = "/admin";
+        } catch {
+          errorMsg.classList.add("visible");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Sign in";
+        }
+      });
+    </script>
+  </body>
+</html>

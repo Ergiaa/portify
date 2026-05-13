@@ -1,0 +1,205 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { db } from "@portify/db";
+import { contentItems } from "@portify/db/schema/content";
+import { eq } from "drizzle-orm";
+
+const { id } = Astro.params;
+if (!id) return Astro.redirect("/admin/content");
+
+const result = await db.select().from(contentItems).where(eq(contentItems.id, id)).limit(1);
+const item = result[0];
+if (!item) return Astro.redirect("/admin/content");
+---
+
+<AdminLayout title="Edit content">
+<div class="px-8 py-10 max-w-2xl">
+
+  <!-- Breadcrumb + header -->
+  <div class="mb-8">
+    <a href="/admin/content" class="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors mb-5">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to content
+    </a>
+
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-white mb-2">Edit content</h1>
+        <span id="status-badge" class:list={["inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium capitalize border", {
+          "bg-amber-500/10 text-amber-300 border-amber-500/20": item.status === "draft",
+          "bg-emerald-500/10 text-emerald-300 border-emerald-500/20": item.status === "published",
+          "bg-neutral-800 text-neutral-400 border-neutral-700": item.status === "archived",
+        }]}>
+          <span class:list={["w-1.5 h-1.5 rounded-full", {
+            "bg-amber-400": item.status === "draft",
+            "bg-emerald-400": item.status === "published",
+            "bg-neutral-500": item.status === "archived",
+          }]}></span>
+          {item.status}
+        </span>
+      </div>
+
+      <!-- Status + delete actions -->
+      <div class="flex items-center gap-2 shrink-0">
+        {item.status !== "published" && (
+          <button id="publish-btn" data-id={item.id}
+            class="text-xs px-3.5 py-2 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/30 rounded-lg transition-all font-medium">
+            Publish
+          </button>
+        )}
+        {item.status === "published" && (
+          <button id="archive-btn" data-id={item.id}
+            class="text-xs px-3.5 py-2 bg-neutral-800 text-neutral-300 hover:bg-neutral-700 border border-neutral-700 hover:border-neutral-600 rounded-lg transition-all font-medium">
+            Archive
+          </button>
+        )}
+        <button id="delete-btn" data-id={item.id}
+          class="text-xs px-3.5 py-2 bg-red-500/10 text-red-400 hover:bg-red-500/15 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all font-medium">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-5">
+    <form id="edit-form" novalidate>
+
+      <div class="mb-5">
+        <label for="title" class="block text-xs font-semibold text-neutral-400 mb-1.5 uppercase tracking-wider">Title <span class="text-red-400">*</span></label>
+        <input id="title" name="title" type="text" required value={item.title}
+          class="w-full bg-neutral-950 border border-neutral-700/60 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-5">
+        <div>
+          <label for="type" class="block text-xs font-semibold text-neutral-400 mb-1.5 uppercase tracking-wider">Type <span class="text-red-400">*</span></label>
+          <select id="type" name="type" required
+            class="w-full bg-neutral-950 border border-neutral-700/60 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer">
+            {["video","article","podcast","design"].map(t => (
+              <option value={t} selected={item.type === t}>{t.charAt(0).toUpperCase()+t.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label for="platform" class="block text-xs font-semibold text-neutral-400 mb-1.5 uppercase tracking-wider">Platform</label>
+          <select id="platform" name="platform"
+            class="w-full bg-neutral-950 border border-neutral-700/60 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer">
+            <option value="" selected={!item.platform}>None</option>
+            {["tiktok","instagram","youtube"].map(p => (
+              <option value={p} selected={item.platform === p}>{p.charAt(0).toUpperCase()+p.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <label for="description" class="block text-xs font-semibold text-neutral-400 mb-1.5 uppercase tracking-wider">Description</label>
+        <textarea id="description" name="description" rows="3"
+          class="w-full bg-neutral-950 border border-neutral-700/60 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none"
+        >{item.description}</textarea>
+      </div>
+
+      <div class="mb-5">
+        <label for="externalUrl" class="block text-xs font-semibold text-neutral-400 mb-1.5 uppercase tracking-wider">External URL</label>
+        <input id="externalUrl" name="externalUrl" type="url" value={item.externalUrl ?? ""} placeholder="https://..."
+          class="w-full bg-neutral-950 border border-neutral-700/60 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+      </div>
+
+      <div class="mb-7">
+        <label for="personalRating" class="block text-xs font-semibold text-neutral-400 mb-1.5 uppercase tracking-wider">Personal Rating</label>
+        <select id="personalRating" name="personalRating"
+          class="w-full bg-neutral-950 border border-neutral-700/60 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer">
+          <option value="" selected={!item.personalRating}>No rating</option>
+          {[1,2,3,4,5].map(n => (
+            <option value={n} selected={item.personalRating === n}>{n} / 5</option>
+          ))}
+        </select>
+      </div>
+
+      <div id="error-msg" class="hidden mb-4 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400"></div>
+      <div id="success-msg" class="hidden mb-4 px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-sm text-emerald-400">Changes saved successfully.</div>
+
+      <div class="flex items-center gap-3 pt-1 border-t border-neutral-800">
+        <button id="save-btn" type="submit"
+          class="mt-4 bg-white text-black text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-neutral-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+          Save changes
+        </button>
+        <a href="/admin/content" class="mt-4 text-sm text-neutral-500 hover:text-neutral-300 transition-colors">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</AdminLayout>
+
+<script>
+  import { adminOrpc } from "../../../lib/admin-orpc";
+
+  const id = window.location.pathname.split("/").at(-1)!;
+  const form = document.getElementById("edit-form") as HTMLFormElement;
+  const saveBtn = document.getElementById("save-btn") as HTMLButtonElement;
+  const errorMsg = document.getElementById("error-msg") as HTMLDivElement;
+  const successMsg = document.getElementById("success-msg") as HTMLDivElement;
+
+  // Save
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorMsg.classList.add("hidden");
+    successMsg.classList.add("hidden");
+
+    const title = (document.getElementById("title") as HTMLInputElement).value.trim();
+    const type = (document.getElementById("type") as HTMLSelectElement).value;
+    if (!title || !type) {
+      errorMsg.textContent = "Title and type are required.";
+      errorMsg.classList.remove("hidden");
+      return;
+    }
+
+    const description = (document.getElementById("description") as HTMLTextAreaElement).value.trim() || undefined;
+    const externalUrl = (document.getElementById("externalUrl") as HTMLInputElement).value.trim() || undefined;
+    const platform = (document.getElementById("platform") as HTMLSelectElement).value || undefined;
+    const ratingVal = (document.getElementById("personalRating") as HTMLSelectElement).value;
+    const personalRating = ratingVal ? parseInt(ratingVal) : undefined;
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving…";
+
+    try {
+      await adminOrpc.content.update({ id, title, type: type as any, description, externalUrl, platform: platform as any, personalRating });
+      successMsg.classList.remove("hidden");
+    } catch (err: any) {
+      errorMsg.textContent = err?.message ?? "Something went wrong.";
+      errorMsg.classList.remove("hidden");
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save changes";
+    }
+  });
+
+  // Publish
+  document.getElementById("publish-btn")?.addEventListener("click", async () => {
+    try {
+      await adminOrpc.content.setStatus({ id, status: "published" });
+      window.location.reload();
+    } catch { alert("Failed to publish."); }
+  });
+
+  // Archive
+  document.getElementById("archive-btn")?.addEventListener("click", async () => {
+    try {
+      await adminOrpc.content.setStatus({ id, status: "archived" });
+      window.location.reload();
+    } catch { alert("Failed to archive."); }
+  });
+
+  // Delete
+  document.getElementById("delete-btn")?.addEventListener("click", async () => {
+    if (!confirm("Delete this item? This cannot be undone.")) return;
+    try {
+      await adminOrpc.content.delete({ id });
+      window.location.href = "/admin/content";
+    } catch { alert("Failed to delete."); }
+  });
+</script>

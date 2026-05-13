@@ -1,0 +1,71 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+}
+const { title = "Admin" } = Astro.props;
+const pathname = Astro.url.pathname;
+
+const navItems = [
+  { href: "/admin", label: "Dashboard", icon: "⊞" },
+  { href: "/admin/content", label: "Content", icon: "≡" },
+];
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-screen bg-neutral-950 text-white flex" style="-webkit-font-smoothing:antialiased;">
+
+    <!-- Sidebar -->
+    <aside class="fixed top-0 left-0 h-full w-56 bg-neutral-900 border-r border-neutral-800 flex flex-col z-10">
+      <!-- Brand -->
+      <div class="px-5 py-5 border-b border-neutral-800">
+        <a href="/admin" class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">A</div>
+          <span class="text-sm font-semibold text-white">Archtype</span>
+        </a>
+      </div>
+
+      <!-- Nav -->
+      <nav class="flex-1 px-3 py-4 flex flex-col gap-0.5">
+        {navItems.map(item => {
+          const isActive = item.href === "/admin"
+            ? pathname === "/admin"
+            : pathname.startsWith(item.href);
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors",
+                isActive
+                  ? "bg-neutral-800 text-white font-medium"
+                  : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
+              ]}
+            >
+              <span class="text-base leading-none">{item.icon}</span>
+              {item.label}
+            </a>
+          );
+        })}
+      </nav>
+
+      <!-- Footer -->
+      <div class="px-5 py-4 border-t border-neutral-800">
+        <a href="/" class="text-xs text-neutral-600 hover:text-neutral-400 transition-colors">← View site</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 ml-56 min-h-screen">
+      <slot />
+    </main>
+
+  </body>
+</html>

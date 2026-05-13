@@ -1,0 +1,45 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { db } from "@portify/db";
+import { contentItems } from "@portify/db/schema/content";
+import { eq, sql } from "drizzle-orm";
+
+const counts = await db
+  .select({ status: contentItems.status, count: sql<number>`count(*)::int` })
+  .from(contentItems)
+  .groupBy(contentItems.status);
+
+const byStatus = Object.fromEntries(counts.map(r => [r.status, r.count]));
+const published = byStatus["published"] ?? 0;
+const draft = byStatus["draft"] ?? 0;
+const archived = byStatus["archived"] ?? 0;
+const total = published + draft + archived;
+---
+
+<AdminLayout title="Dashboard">
+  <div class="px-8 py-10">
+    <h1 class="text-xl font-semibold text-white mb-1">Dashboard</h1>
+    <p class="text-neutral-500 text-sm mb-8">Overview of your portfolio.</p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+      {[
+        { label: "Total", value: total, color: "text-white" },
+        { label: "Published", value: published, color: "text-emerald-400" },
+        { label: "Draft", value: draft, color: "text-amber-400" },
+        { label: "Archived", value: archived, color: "text-neutral-400" },
+      ].map(stat => (
+        <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
+          <p class:list={["text-2xl font-bold mb-1", stat.color]}>{stat.value}</p>
+          <p class="text-xs text-neutral-500">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <a
+      href="/admin/content"
+      class="inline-flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+    >
+      Manage content →
+    </a>
+  </div>
+</AdminLayout>
