@@ -1,20 +1,29 @@
 ---
 interface Props {
-  title: string;
-  email: string;
-  socials: { platform: string; url: string }[];
+  title: string; description?: string; availability?: string;
+  email: string; phone?: string; socials: { platform: string; url: string }[];
 }
-const { title, email, socials } = Astro.props;
+const { title, description = "", availability = "", email, phone = "", socials } = Astro.props;
 ---
 <section style="padding: 5rem 8.5vw; background: white; text-align: center;">
-  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); margin: 0 0 2rem;">{title}</h2>
-  {email && (
-    <a href={`mailto:${email}`} style="display: inline-block; color: #f97c44; font-size: 1.25rem; font-weight: 700; text-decoration: none; margin-bottom: 2rem;">
-      {email}
-    </a>
+  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem,3vw,2.5rem); margin: 0 0 1rem;">{title}</h2>
+  {description && <p style="color: #666; max-width: 36rem; margin: 0 auto 1.5rem; font-size: 1.05rem; line-height: 1.7;">{description}</p>}
+  {availability && (
+    <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1.25rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 2rem; color: #16a34a; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem;">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;" />
+      {availability}
+    </div>
   )}
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
+    {email && (
+      <a href={`mailto:${email}`} style="color: #f97c44; font-size: 1.15rem; font-weight: 700; text-decoration: none;">{email}</a>
+    )}
+    {phone && (
+      <a href={`tel:${phone}`} style="color: #34366a; font-size: 1rem; font-weight: 600; text-decoration: none;">{phone}</a>
+    )}
+  </div>
   {socials.length > 0 && (
-    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+    <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
       {socials.map((s) => (
         <a href={s.url} target="_blank" rel="noopener noreferrer"
           style="padding: 0.6rem 1.5rem; background: #f0f5fc; color: #34366a; border-radius: 2rem; text-decoration: none; font-weight: 700; font-size: 0.9rem; text-transform: capitalize; border: 1px solid #d0d8ec;">

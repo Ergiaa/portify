@@ -1,18 +1,36 @@
 ---
 interface Props {
-  bio: string;
-  photoUrl: string;
+  title?: string; name?: string; role?: string; bio: string; photoUrl: string;
+  photoPosition?: "left" | "right";
+  highlights?: { label: string; value: string }[];
+  ctaLabel?: string; ctaHref?: string;
 }
-const { bio, photoUrl } = Astro.props;
+const { title = "About me", name = "", role = "", bio, photoUrl,
+        photoPosition = "left", highlights = [], ctaLabel = "", ctaHref = "" } = Astro.props;
+const isRight = photoPosition === "right";
 ---
 <section style="padding: 5rem 8.5vw; background: #f0f5fc;">
-  <div style="display: flex; align-items: center; gap: 4rem; max-width: 72rem; margin: 0 auto;">
-    {photoUrl ? (
-      <img src={photoUrl} alt="Profile photo" style="width: clamp(160px, 20vw, 280px); height: clamp(160px, 20vw, 280px); border-radius: 50%; object-fit: cover; flex-shrink: 0;" />
-    ) : null}
-    <div>
-      <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 3rem); margin: 0 0 1rem;">About me</h2>
-      <p style="color: #1a1a1a; font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.7; margin: 0;">{bio}</p>
+  <div style={`display: flex; align-items: flex-start; gap: clamp(2rem,5vw,5rem); max-width: 72rem; margin: 0 auto; flex-direction: ${isRight ? "row-reverse" : "row"};`}>
+    {photoUrl && (
+      <img src={photoUrl} alt="Profile photo" style="width: clamp(140px,18vw,240px); height: clamp(140px,18vw,240px); border-radius: 50%; object-fit: cover; flex-shrink: 0;" />
+    )}
+    <div style="flex: 1; min-width: 0;">
+      <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 3rem); margin: 0 0 0.5rem;">{title}</h2>
+      {name && <p style="color: #1a1a1a; font-size: clamp(1.1rem,1.8vw,1.5rem); font-weight: 700; margin: 0 0 0.25rem;">{name}</p>}
+      {role && <p style="color: #f97c44; font-size: clamp(0.9rem,1.2vw,1rem); font-weight: 600; margin: 0 0 1.25rem;">{role}</p>}
+      <p style="color: #1a1a1a; font-size: clamp(1rem, 1.5vw, 1.15rem); line-height: 1.75; margin: 0 0 1.5rem;">{bio}</p>
+      {highlights.length > 0 && (
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+          {highlights.map((h) => (
+            <span style="padding: 0.4rem 1rem; background: white; color: #34366a; border-radius: 2rem; font-size: 0.85rem; border: 1px solid #d0d8ec;">
+              <span style="color: #888;">{h.label}</span> · {h.value}
+            </span>
+          ))}
+        </div>
+      )}
+      {ctaLabel && (
+        <a href={ctaHref} style="color: #f97c44; font-weight: 700; font-size: 1rem; text-decoration: none;">{ctaLabel} →</a>
+      )}
     </div>
   </div>
 </section>

@@ -1,17 +1,41 @@
 ---
 interface Props {
-  title: string;
-  skills: string[];
+  title: string; description?: string; layout?: "tags" | "bars";
+  skills: { name: string; level: number }[];
 }
-const { title, skills } = Astro.props;
+const { title, description = "", layout = "tags", skills } = Astro.props;
+const isBars = layout === "bars";
+function levelColor(level: number) {
+  if (level >= 70) return "#6d28d9";
+  if (level >= 40) return "#4f46e5";
+  return "#6b7280";
+}
 ---
 <section style="padding: 4rem 8.5vw; background: white;">
-  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); text-align: center; margin: 0 0 2.5rem;">{title}</h2>
-  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; max-width: 60rem; margin: 0 auto;">
-    {skills.map((skill) => (
-      <span style="padding: 0.5rem 1.25rem; background: #f0f5fc; color: #34366a; border-radius: 2rem; font-size: 0.95rem; border: 1px solid #d0d8ec;">
-        {skill}
-      </span>
-    ))}
-  </div>
+  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem,3vw,2.5rem); text-align: center; margin: 0 0 0.75rem;">{title}</h2>
+  {description && <p style="color: #666; text-align: center; margin: 0 auto 2.5rem; max-width: 36rem; font-size: 1rem;">{description}</p>}
+  {!description && <div style="margin-bottom: 2.5rem;" />}
+  {isBars ? (
+    <div style="max-width: 40rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.25rem;">
+      {skills.map((s) => (
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            <span style="color: #34366a; font-weight: 600;">{s.name}</span>
+            <span style="color: #888;">{s.level}%</span>
+          </div>
+          <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+            <div style={`height: 100%; width: ${s.level}%; background: ${levelColor(s.level)}; border-radius: 4px;`} />
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; max-width: 60rem; margin: 0 auto;">
+      {skills.map((s) => (
+        <span style="padding: 0.5rem 1.25rem; background: #f0f5fc; color: #34366a; border-radius: 2rem; font-size: 0.95rem; border: 1px solid #d0d8ec; font-weight: 500;">
+          {s.name}
+        </span>
+      ))}
+    </div>
+  )}
 </section>

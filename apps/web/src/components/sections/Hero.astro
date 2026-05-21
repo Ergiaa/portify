@@ -1,18 +1,35 @@
 ---
 interface Props {
-  heading: string;
-  subheading: string;
-  ctaLabel: string;
-  ctaHref: string;
+  heading: string; subheading: string; tagline?: string; avatarUrl?: string;
+  layout?: "centered" | "split"; ctaLabel: string; ctaHref: string;
+  cta2Label?: string; cta2Href?: string;
 }
-const { heading, subheading, ctaLabel, ctaHref } = Astro.props;
+const { heading, subheading, tagline = "", avatarUrl = "", layout = "centered",
+        ctaLabel, ctaHref, cta2Label = "", cta2Href = "" } = Astro.props;
+const isSplit = layout === "split";
 ---
-<section style="background: linear-gradient(135deg, #34366a 0%, #4a4d9e 100%); padding: 6rem 8.5vw; text-align: center;">
-  <h1 style="color: white; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 700; margin: 0 0 1rem;">{heading}</h1>
-  <p style="color: rgba(255,255,255,0.8); font-size: clamp(1rem, 2vw, 1.5rem); margin: 0 0 2.5rem;">{subheading}</p>
-  {ctaLabel && (
-    <a href={ctaHref} style="display: inline-block; background: #f97c44; color: white; padding: 1rem 3rem; border-radius: 2rem; font-weight: 700; text-decoration: none; font-size: 1rem;">
-      {ctaLabel}
-    </a>
-  )}
+<section style="background: linear-gradient(135deg, #34366a 0%, #4a4d9e 100%); padding: 5rem 8.5vw; min-height: 400px; display: flex; align-items: center;">
+  <div style={`width: 100%; max-width: 72rem; margin: 0 auto; display: flex; flex-direction: ${isSplit ? "row" : "column"}; align-items: center; gap: 4rem; ${!isSplit ? "text-align: center;" : ""}`}>
+    <!-- Text -->
+    <div style={isSplit ? "flex: 1;" : ""}>
+      {tagline && <p style="color: rgba(255,255,255,0.6); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin: 0 0 1rem;">{tagline}</p>}
+      {!isSplit && avatarUrl && (
+        <img src={avatarUrl} alt="" style="width: clamp(80px,10vw,120px); height: clamp(80px,10vw,120px); border-radius: 50%; object-fit: cover; margin: 0 auto 1.5rem; display: block; border: 3px solid rgba(255,255,255,0.2);" />
+      )}
+      <h1 style="color: white; font-size: clamp(2.5rem, 5.5vw, 5.5rem); font-weight: 700; line-height: 1.05; margin: 0 0 1rem;">{heading}</h1>
+      <p style="color: rgba(255,255,255,0.75); font-size: clamp(1rem, 2vw, 1.4rem); margin: 0 0 2.5rem; max-width: 36rem;">{subheading}</p>
+      <div style={`display: flex; flex-wrap: wrap; gap: 1rem; ${!isSplit ? "justify-content: center;" : ""}`}>
+        {ctaLabel && (
+          <a href={ctaHref} style="display: inline-block; background: #f97c44; color: white; padding: 0.9rem 2.5rem; border-radius: 2rem; font-weight: 700; text-decoration: none; font-size: 1rem;">{ctaLabel}</a>
+        )}
+        {cta2Label && (
+          <a href={cta2Href} style="display: inline-block; background: transparent; color: white; padding: 0.9rem 2.5rem; border-radius: 2rem; font-weight: 700; text-decoration: none; font-size: 1rem; border: 2px solid rgba(255,255,255,0.6);">{cta2Label}</a>
+        )}
+      </div>
+    </div>
+    <!-- Avatar (split only) -->
+    {isSplit && avatarUrl && (
+      <img src={avatarUrl} alt="" style="width: clamp(180px,22vw,300px); height: clamp(180px,22vw,300px); border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 4px solid rgba(255,255,255,0.2);" />
+    )}
+  </div>
 </section>

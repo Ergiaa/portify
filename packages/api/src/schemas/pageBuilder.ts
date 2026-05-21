@@ -12,8 +12,13 @@ const HeroSection = z.object({
   config: z.object({
     heading: z.string(),
     subheading: z.string(),
+    tagline: z.string().optional().default(""),
+    avatarUrl: z.string().optional().default(""),
+    layout: z.enum(["centered", "split"]).optional().default("centered"),
     ctaLabel: z.string(),
     ctaHref: z.string(),
+    cta2Label: z.string().optional().default(""),
+    cta2Href: z.string().optional().default(""),
   }),
 });
 
@@ -21,8 +26,18 @@ const AboutSection = z.object({
   ...envelope,
   type: z.literal("about"),
   config: z.object({
+    title: z.string().optional().default("About me"),
+    name: z.string().optional().default(""),
+    role: z.string().optional().default(""),
     bio: z.string(),
     photoUrl: z.string(),
+    photoPosition: z.enum(["left", "right"]).optional().default("left"),
+    highlights: z
+      .array(z.object({ label: z.string(), value: z.string() }))
+      .optional()
+      .default([]),
+    ctaLabel: z.string().optional().default(""),
+    ctaHref: z.string().optional().default(""),
   }),
 });
 
@@ -31,7 +46,14 @@ const SkillsSection = z.object({
   type: z.literal("skills"),
   config: z.object({
     title: z.string(),
-    skills: z.array(z.string()),
+    description: z.string().optional().default(""),
+    layout: z.enum(["tags", "bars"]).optional().default("tags"),
+    skills: z.array(
+      z.object({
+        name: z.string(),
+        level: z.number().min(0).max(100).default(80),
+      })
+    ),
   }),
 });
 
@@ -40,7 +62,15 @@ const StatsSection = z.object({
   type: z.literal("stats"),
   config: z.object({
     title: z.string(),
-    stats: z.array(z.object({ number: z.string(), label: z.string() })),
+    description: z.string().optional().default(""),
+    layout: z.enum(["inline", "cards"]).optional().default("inline"),
+    stats: z.array(
+      z.object({
+        number: z.string(),
+        label: z.string(),
+        icon: z.string().optional().default(""),
+      })
+    ),
   }),
 });
 
@@ -50,6 +80,13 @@ const ProjectsSection = z.object({
   config: z.object({
     title: z.string(),
     limit: z.number().int().default(6),
+    layout: z.enum(["grid", "list"]).optional().default("grid"),
+    filterType: z
+      .enum(["", "video", "article", "podcast", "design"])
+      .optional()
+      .default(""),
+    viewAllLabel: z.string().optional().default(""),
+    viewAllHref: z.string().optional().default(""),
   }),
 });
 
@@ -58,7 +95,10 @@ const ContactSection = z.object({
   type: z.literal("contact"),
   config: z.object({
     title: z.string(),
+    description: z.string().optional().default(""),
+    availability: z.string().optional().default(""),
     email: z.string(),
+    phone: z.string().optional().default(""),
     socials: z.array(z.object({ platform: z.string(), url: z.string() })),
   }),
 });

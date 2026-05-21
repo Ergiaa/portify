@@ -1,16 +1,26 @@
 ---
 interface Props {
-  title: string;
-  stats: { number: string; label: string }[];
+  title: string; description?: string; layout?: "inline" | "cards";
+  stats: { number: string; label: string; icon?: string }[];
 }
-const { title, stats } = Astro.props;
+const { title, description = "", layout = "inline", stats } = Astro.props;
+const isCards = layout === "cards";
 ---
 <section style="padding: 4rem 8.5vw; background: #34366a; text-align: center;">
-  {title && <h2 style="color: white; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); margin: 0 0 3rem;">{title}</h2>}
-  <div style="display: flex; flex-wrap: wrap; gap: 3rem; justify-content: center;">
-    {stats.map((stat) => (
+  {title && <h2 style="color: white; font-weight: 700; font-size: clamp(1.5rem,3vw,2.5rem); margin: 0 0 0.75rem;">{title}</h2>}
+  {description && <p style="color: rgba(255,255,255,0.6); margin: 0 auto 3rem; max-width: 36rem; font-size: 1rem;">{description}</p>}
+  {!description && title && <div style="margin-bottom: 3rem;" />}
+  <div style={`display: flex; flex-wrap: wrap; gap: ${isCards ? "1.5rem" : "3rem"}; justify-content: center; max-width: 72rem; margin: 0 auto;`}>
+    {stats.map((stat) => isCards ? (
+      <div style="flex: 1; min-width: 160px; max-width: 220px; padding: 2rem 1.5rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 1.25rem;">
+        {stat.icon && <p style="font-size: 2rem; margin: 0 0 0.75rem;">{stat.icon}</p>}
+        <p style="color: white; font-size: clamp(2rem,4vw,3rem); font-weight: 700; margin: 0 0 0.25rem;">{stat.number}</p>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin: 0;">{stat.label}</p>
+      </div>
+    ) : (
       <div>
-        <p style="color: white; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin: 0;">{stat.number}</p>
+        {stat.icon && <p style="font-size: 1.75rem; margin: 0 0 0.5rem;">{stat.icon}</p>}
+        <p style="color: #f97c44; font-size: clamp(2.5rem,5vw,4rem); font-weight: 700; margin: 0;">{stat.number}</p>
         <p style="color: rgba(255,255,255,0.7); font-size: 1rem; margin: 0.25rem 0 0;">{stat.label}</p>
       </div>
     ))}

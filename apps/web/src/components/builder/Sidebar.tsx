@@ -14,12 +14,59 @@ const SECTION_TYPES = [
 ] as const;
 
 const DEFAULTS: Record<string, object> = {
-  hero: { heading: "Hey There!", subheading: "I do things.", ctaLabel: "Hire me", ctaHref: "/hire-me" },
-  about: { bio: "Write something about yourself.", photoUrl: "" },
-  skills: { title: "Skills", skills: ["Design", "Development"] },
-  stats: { title: "Stats", stats: [{ number: "50+", label: "Projects" }] },
-  projects: { title: "My Work", limit: 6 },
-  contact: { title: "Get in Touch", email: "", socials: [] },
+  hero: {
+    heading: "I'm Nasrudin",
+    subheading: "I review films and tell stories.",
+    tagline: "Hey there, I'm",
+    avatarUrl: "",
+    layout: "centered",
+    ctaLabel: "Hire me",
+    ctaHref: "/hire-me",
+    cta2Label: "See my work",
+    cta2Href: "#projects",
+  },
+  about: {
+    title: "About me",
+    name: "",
+    role: "",
+    bio: "Write something about yourself.",
+    photoUrl: "",
+    photoPosition: "left",
+    highlights: [],
+    ctaLabel: "",
+    ctaHref: "",
+  },
+  skills: {
+    title: "Skills",
+    description: "",
+    layout: "tags",
+    skills: [
+      { name: "Design", level: 85 },
+      { name: "Development", level: 70 },
+    ],
+  },
+  stats: {
+    title: "By the numbers",
+    description: "",
+    layout: "inline",
+    stats: [{ number: "50+", label: "Projects", icon: "🚀" }],
+  },
+  projects: {
+    title: "My Work",
+    limit: 6,
+    layout: "grid",
+    filterType: "",
+    viewAllLabel: "",
+    viewAllHref: "",
+  },
+  contact: {
+    title: "Get in Touch",
+    description: "I'm open to freelance work and collaborations.",
+    availability: "",
+    email: "",
+    phone: "",
+    socials: [],
+  },
 };
 
 interface Props {
