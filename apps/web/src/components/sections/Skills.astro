@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  skills: string[];
+}
+const { title, skills } = Astro.props;
+---
+<section style="padding: 4rem 8.5vw; background: white;">
+  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); text-align: center; margin: 0 0 2.5rem;">{title}</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; max-width: 60rem; margin: 0 auto;">
+    {skills.map((skill) => (
+      <span style="padding: 0.5rem 1.25rem; background: #f0f5fc; color: #34366a; border-radius: 2rem; font-size: 0.95rem; border: 1px solid #d0d8ec;">
+        {skill}
+      </span>
+    ))}
+  </div>
+</section>

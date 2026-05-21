@@ -1,0 +1,18 @@
+---
+interface Props {
+  title: string;
+  stats: { number: string; label: string }[];
+}
+const { title, stats } = Astro.props;
+---
+<section style="padding: 4rem 8.5vw; background: #34366a; text-align: center;">
+  {title && <h2 style="color: white; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); margin: 0 0 3rem;">{title}</h2>}
+  <div style="display: flex; flex-wrap: wrap; gap: 3rem; justify-content: center;">
+    {stats.map((stat) => (
+      <div>
+        <p style="color: white; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin: 0;">{stat.number}</p>
+        <p style="color: rgba(255,255,255,0.7); font-size: 1rem; margin: 0.25rem 0 0;">{stat.label}</p>
+      </div>
+    ))}
+  </div>
+</section>

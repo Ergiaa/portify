@@ -1,4 +1,5 @@
 import node from "@astrojs/node";
+import react from "@astrojs/react";
 // @ts-check
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField } from "astro/config";
@@ -12,6 +13,7 @@ loadDotenv();
 export default defineConfig({
   output: "server",
   adapter: node({ mode: "standalone" }),
+  integrations: [react()],
   env: {
     schema: {
       PUBLIC_SERVER_URL: envField.string({
@@ -23,5 +25,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ["react", "react-dom", "react-dom/client"],
+    },
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
   },
 });

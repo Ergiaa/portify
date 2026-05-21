@@ -11,6 +11,32 @@ const imgLinkedIn          = "https://www.figma.com/api/mcp/asset/2fd9fbf2-b0cc-
 const imgYouTubePlayButton = "https://www.figma.com/api/mcp/asset/9f2b3a8a-80b6-4c30-9d6e-7b0fafc1b52d";
 // const imgIcel1             = "https://www.figma.com/api/mcp/asset/583cf2d6-eff6-4e41-91ba-b9d571d22c2d";
 const imgIcel2             = "https://www.figma.com/api/mcp/asset/33306351-1fa8-47e8-b485-de6a89653a92";
+
+import { db } from "@portify/db";
+import { portfolioConfig } from "@portify/db/schema/portfolio";
+import { PageConfigSchema } from "@portify/api/schemas/pageBuilder";
+import { eq, desc } from "drizzle-orm";
+import Hero from "../components/sections/Hero.astro";
+import About from "../components/sections/About.astro";
+import Skills from "../components/sections/Skills.astro";
+import Stats from "../components/sections/Stats.astro";
+import Projects from "../components/sections/Projects.astro";
+import Contact from "../components/sections/Contact.astro";
+
+const [latestConfig] = await db
+  .select()
+  .from(portfolioConfig)
+  .where(eq(portfolioConfig.isDraft, false))
+  .orderBy(desc(portfolioConfig.updatedAt))
+  .limit(1);
+
+const parsedModules = latestConfig
+  ? PageConfigSchema.safeParse(latestConfig.modules).data ?? null
+  : null;
+
+const activeSections = parsedModules
+  ? parsedModules.filter((s) => s.enabled).sort((a, b) => a.position - b.position)
+  : null;
 ---
 
 <!doctype html>
@@ -41,6 +67,18 @@ const imgIcel2             = "https://www.figma.com/api/mcp/asset/33306351-1fa8-
     </style>
   </head>
   <body>
+    {activeSections ? (
+      <main style="font-family: 'Montserrat', sans-serif;">
+        {activeSections.map((section) => {
+          if (section.type === "hero")     return <Hero     {...section.config} />;
+          if (section.type === "about")    return <About    {...section.config} />;
+          if (section.type === "skills")   return <Skills   {...section.config} />;
+          if (section.type === "stats")    return <Stats    {...section.config} />;
+          if (section.type === "projects") return <Projects {...section.config} />;
+          if (section.type === "contact")  return <Contact  {...section.config} />;
+        })}
+      </main>
+    ) : (
     <div style="position: relative;">
 
       <!-- Hero section container -->
@@ -237,5 +275,6 @@ const imgIcel2             = "https://www.figma.com/api/mcp/asset/33306351-1fa8-
       </section>
 
     </div>
+    )}
   </body>
 </html>

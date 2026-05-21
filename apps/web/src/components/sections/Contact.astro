@@ -1,0 +1,26 @@
+---
+interface Props {
+  title: string;
+  email: string;
+  socials: { platform: string; url: string }[];
+}
+const { title, email, socials } = Astro.props;
+---
+<section style="padding: 5rem 8.5vw; background: white; text-align: center;">
+  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); margin: 0 0 2rem;">{title}</h2>
+  {email && (
+    <a href={`mailto:${email}`} style="display: inline-block; color: #f97c44; font-size: 1.25rem; font-weight: 700; text-decoration: none; margin-bottom: 2rem;">
+      {email}
+    </a>
+  )}
+  {socials.length > 0 && (
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+      {socials.map((s) => (
+        <a href={s.url} target="_blank" rel="noopener noreferrer"
+          style="padding: 0.6rem 1.5rem; background: #f0f5fc; color: #34366a; border-radius: 2rem; text-decoration: none; font-weight: 700; font-size: 0.9rem; text-transform: capitalize; border: 1px solid #d0d8ec;">
+          {s.platform}
+        </a>
+      ))}
+    </div>
+  )}
+</section>

@@ -1,0 +1,33 @@
+---
+import { db } from "@portify/db";
+import { contentItems } from "@portify/db/schema/content";
+import { eq, desc } from "drizzle-orm";
+
+interface Props {
+  title: string;
+  limit: number;
+}
+const { title, limit } = Astro.props;
+
+const items = await db
+  .select({ id: contentItems.id, title: contentItems.title, type: contentItems.type, thumbnailUrl: contentItems.thumbnailUrl })
+  .from(contentItems)
+  .where(eq(contentItems.status, "published"))
+  .orderBy(desc(contentItems.publishedAt))
+  .limit(limit);
+---
+<section style="padding: 5rem 8.5vw; background: #f0f5fc;" id="projects">
+  <h2 style="color: #34366a; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.5rem); text-align: center; margin: 0 0 3rem;">{title}</h2>
+  {items.length === 0 ? (
+    <p style="text-align: center; color: #888;">No published content yet.</p>
+  ) : (
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; max-width: 72rem; margin: 0 auto;">
+      {items.map((item) => (
+        <div style="background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+          <p style="font-size: 0.75rem; color: #f97c44; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem; font-weight: 700;">{item.type}</p>
+          <p style="color: #1a1a1a; font-weight: 700; font-size: 1rem; margin: 0;">{item.title}</p>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
