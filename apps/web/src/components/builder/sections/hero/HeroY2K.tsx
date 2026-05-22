@@ -29,8 +29,9 @@ export function HeroY2K({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%", position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg,#0a0a16 0%,#12122a 40%,#0a0a16 100%)",
+      background: "#0a0a16",
       color: "#fff", fontFamily: "Space Grotesk, sans-serif", padding: 40, boxSizing: "border-box",
+      borderBottom: "1px solid rgba(110,143,255,0.2)",
     }}>
       <style>{"@keyframes spinHero { to { transform: rotate(360deg); } }"}</style>
 

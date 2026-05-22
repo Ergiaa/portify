@@ -24,6 +24,7 @@ const DEFAULTS: Record<string, object> = {
     ctaHref: "/hire-me",
     cta2Label: "See my work",
     cta2Href: "#projects",
+    badge: "",
   },
   about: {
     title: "About me",

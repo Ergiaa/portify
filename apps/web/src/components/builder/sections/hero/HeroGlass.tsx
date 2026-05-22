@@ -18,9 +18,10 @@ export function HeroGlass({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%", position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg,#ffd9c2 0%,#e6c8ff 50%,#c9d9ff 100%)",
+      background: "linear-gradient(135deg,#ecdeff 0%,#fde4f5 50%,#d8efff 100%)",
       fontFamily: "Plus Jakarta Sans, sans-serif", color: "#241a3a",
       padding: 48, boxSizing: "border-box", display: "flex", alignItems: "center", gap: 40,
+      borderBottom: "1px solid rgba(255,255,255,0.55)",
     }}>
       <div style={{
         position: "absolute", width: 360, height: 360, borderRadius: "50%",

@@ -8,6 +8,7 @@ interface Props {
     ctaHref: string;
     cta2Label?: string;
     cta2Href?: string;
+    badge?: string;
     variant?: string;
   };
 }
@@ -52,15 +53,12 @@ export function HeroEditorial({ config }: Props) {
               fontFamily: "Geist Mono, monospace", fontSize: 10, padding: "4px 10px",
               border: "1px solid #1a1410", borderRadius: 999, textTransform: "uppercase", letterSpacing: "0.1em",
             }}>
-              {config.subheading.split(" ").slice(0, 3).join(" ")}
+              {config.badge || config.ctaLabel}
             </span>
             <span style={{ fontSize: 14, color: "#6b5b48" }}>· est. 2019</span>
           </div>
           <p style={{ fontSize: 18, lineHeight: 1.5, marginTop: 26, color: "#3a2e22", columnCount: 2, columnGap: 28, textAlign: "justify" }}>
-            <span style={{ float: "left", fontFamily: "Instrument Serif, serif", fontSize: 62, lineHeight: 0.85, paddingRight: 8, paddingTop: 6, fontStyle: "italic" }}>
-              {config.subheading[0]}
-            </span>
-            {config.subheading.slice(1)}
+            {config.subheading}
           </p>
           <div style={{ display: "flex", gap: 12, marginTop: 22 }}>
             <a href={config.ctaHref} style={{

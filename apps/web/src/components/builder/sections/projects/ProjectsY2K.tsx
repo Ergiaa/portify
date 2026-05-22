@@ -38,9 +38,10 @@ export function ProjectsY2K({ config, items }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%",
-      background: "linear-gradient(135deg,#0a0a16 0%,#12122a 40%,#0a0a16 100%)",
+      background: "#0a0a16",
       color: "#fff", fontFamily: "Space Grotesk, sans-serif", padding: 30,
       boxSizing: "border-box", position: "relative", overflow: "hidden",
+      borderBottom: "1px solid rgba(110,143,255,0.2)",
     }}>
       <style>{`.proj-y2k-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #ff7af2,0 0 30px rgba(110,143,255,0.5)}.proj-y2k-card:hover .proj-y2k-overlay{opacity:1}`}</style>
       <div style={{

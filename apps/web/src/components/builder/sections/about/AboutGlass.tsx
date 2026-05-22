@@ -21,9 +21,9 @@ export function AboutGlass({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%", position: "relative", overflow: "hidden",
-      background: "linear-gradient(160deg,#e6e2ff 0%,#ffd6e8 60%,#fff3d1 100%)",
+      background: "linear-gradient(135deg,#ecdeff 0%,#fde4f5 50%,#d8efff 100%)",
       fontFamily: "Plus Jakarta Sans, sans-serif", color: "#2a1e4d",
-      padding: 40, boxSizing: "border-box",
+      padding: 40, boxSizing: "border-box", borderBottom: "1px solid rgba(255,255,255,0.55)",
     }}>
       <div style={{
         position: "absolute", width: 300, height: 300, borderRadius: "50%",

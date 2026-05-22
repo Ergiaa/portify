@@ -28,7 +28,7 @@ export function AboutY2K({ config }: Props) {
     <div style={{
       width: "100%", height: "100%", background: "#0a0a16", color: "#fff",
       fontFamily: "Space Grotesk, sans-serif", padding: 32, boxSizing: "border-box",
-      position: "relative", overflow: "hidden",
+      position: "relative", overflow: "hidden", borderBottom: "1px solid rgba(110,143,255,0.2)",
     }}>
       <div style={{
         position: "absolute", inset: 0,

@@ -16,9 +16,9 @@ export function ContactGlass({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%", position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg,#d4eaff,#e6d4ff 50%,#ffd9e8)",
+      background: "linear-gradient(135deg,#ecdeff 0%,#fde4f5 50%,#d8efff 100%)",
       fontFamily: "Plus Jakarta Sans, sans-serif", color: "#241a3a",
-      padding: 36, boxSizing: "border-box",
+      padding: 36, boxSizing: "border-box", borderBottom: "1px solid rgba(255,255,255,0.55)",
       display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, alignItems: "center",
     }}>
       <div style={{

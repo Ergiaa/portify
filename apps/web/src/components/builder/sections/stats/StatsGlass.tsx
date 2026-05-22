@@ -21,9 +21,10 @@ export function StatsGlass({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%",
-      background: "linear-gradient(135deg,#d8e7ff,#ffd9e8 50%,#fff0d1)",
+      background: "linear-gradient(135deg,#ecdeff 0%,#fde4f5 50%,#d8efff 100%)",
       fontFamily: "Plus Jakarta Sans, sans-serif", color: "#241a3a",
       padding: 36, boxSizing: "border-box", position: "relative", overflow: "hidden",
+      borderBottom: "1px solid rgba(255,255,255,0.55)",
     }}>
       <div style={{
         position: "absolute", width: 320, height: 320, borderRadius: "50%",

@@ -12,9 +12,10 @@ export function SkillsGlass({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%",
-      background: "linear-gradient(135deg,#fce4ff,#d0e8ff)",
+      background: "linear-gradient(135deg,#ecdeff 0%,#fde4f5 50%,#d8efff 100%)",
       fontFamily: "Plus Jakarta Sans, sans-serif", color: "#2a1e4d",
       padding: 40, boxSizing: "border-box", position: "relative", overflow: "hidden",
+      borderBottom: "1px solid rgba(255,255,255,0.55)",
     }}>
       <div style={{
         position: "absolute", width: 360, height: 360, borderRadius: "50%",

@@ -40,10 +40,7 @@ export function AboutEditorial({ config }: Props) {
           <span style={{ fontStyle: "italic" }}>in their own words.</span>
         </h2>
         <p style={{ fontSize: 17, lineHeight: 1.55, color: "#d6cbb6", marginTop: 24, columnCount: 2, columnGap: 28, textAlign: "justify" }}>
-          <span style={{ float: "left", fontFamily: "Instrument Serif, serif", fontSize: 56, lineHeight: 0.85, paddingRight: 8, paddingTop: 4, color: "#bfa888" }}>
-            {config.bio[0]}
-          </span>
-          {config.bio.slice(1)}
+          {config.bio}
         </p>
 
         {config.highlights && config.highlights.length > 0 && (

@@ -75,6 +75,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             <input className={inp} value={section.config.cta2Label ?? ""} onChange={(e) => u({ cta2Label: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Secondary CTA Link</label>
             <input className={inp} value={section.config.cta2Href ?? ""} onChange={(e) => u({ cta2Href: e.target.value })} /></div>
+          {(section.config.variant ?? "swiss") === "editorial" && (
+            <div className={fld}><label className={lbl}>Badge label</label>
+              <input className={inp} value={section.config.badge ?? ""} placeholder="e.g. Filmmaker" onChange={(e) => u({ badge: e.target.value })} /></div>
+          )}
         </>}
 
         {section.type === "about" && <>

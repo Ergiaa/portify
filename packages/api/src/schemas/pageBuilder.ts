@@ -21,6 +21,7 @@ const HeroSection = z.object({
     ctaHref: z.string(),
     cta2Label: z.string().optional().default(""),
     cta2Href: z.string().optional().default(""),
+    badge: z.string().optional().default(""),
     variant: VARIANT,
   }),
 });

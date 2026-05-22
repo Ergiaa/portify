@@ -21,9 +21,10 @@ export function ContactY2K({ config }: Props) {
   return (
     <div style={{
       width: "100%", height: "100%",
-      background: "linear-gradient(135deg,#0a0a16 0%,#12122a 40%,#0a0a16 100%)",
+      background: "#0a0a16",
       color: "#fff", fontFamily: "Space Grotesk, sans-serif", padding: 36,
       boxSizing: "border-box", position: "relative", overflow: "hidden",
+      borderBottom: "1px solid rgba(110,143,255,0.2)",
     }}>
       <div style={{
         position: "absolute", inset: 0,
