@@ -1,0 +1,211 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { db } from "@portify/db";
+import { platforms } from "@portify/db/schema/platforms";
+
+const connectedPlatforms = await db.select({
+  name: platforms.name,
+  accountName: platforms.accountName,
+  accountId: platforms.accountId,
+  lastSyncedAt: platforms.lastSyncedAt,
+  lastSyncStatus: platforms.lastSyncStatus,
+  lastSyncError: platforms.lastSyncError,
+  connectedAt: platforms.connectedAt,
+  syncEnabled: platforms.syncEnabled,
+}).from(platforms);
+
+const connectedMap = Object.fromEntries(connectedPlatforms.map((p) => [p.name, p]));
+
+const supported = [
+  { name: "tiktok", label: "TikTok", icon: "♪" },
+  { name: "instagram", label: "Instagram", icon: "◎" },
+] as const;
+
+const connected = Astro.url.searchParams.get("connected");
+---
+
+<AdminLayout title="Platforms">
+<div class="px-8 py-10">
+
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-white mb-1">Platform Connections</h1>
+    <p class="text-neutral-500 text-sm">Connect your social accounts to sync content statistics automatically.</p>
+  </div>
+
+  <!-- Success banner -->
+  {connected && (
+    <div class="mb-6 px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-sm text-emerald-400">
+      Platform connected successfully.
+    </div>
+  )}
+
+  <!-- Error / info msg -->
+  <div id="status-msg" class="hidden mb-6 px-4 py-3 rounded-xl text-sm border"></div>
+
+  <!-- Platform cards -->
+  <div class="flex flex-col gap-4">
+    {supported.map(({ name, label, icon }) => {
+      const platform = connectedMap[name];
+      const isConnected = !!platform;
+      const hasError = platform?.lastSyncStatus === "error";
+      const isSyncing = platform?.lastSyncStatus === "in_progress";
+
+      return (
+        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6" data-platform={name}>
+          <div class="flex items-start justify-between gap-4">
+            <!-- Left: info -->
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center text-lg">
+                {icon}
+              </div>
+              <div>
+                <div class="flex items-center gap-2.5 mb-0.5">
+                  <span class="text-white font-semibold text-sm">{label}</span>
+                  {isConnected ? (
+                    <span class:list={["inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border", hasError
+                      ? "bg-red-500/10 text-red-400 border-red-500/20"
+                      : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    ]}>
+                      <span class:list={["w-1.5 h-1.5 rounded-full", hasError ? "bg-red-400" : "bg-emerald-400"]}></span>
+                      {hasError ? "Error" : "Connected"}
+                    </span>
+                  ) : (
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border bg-neutral-800 text-neutral-500 border-neutral-700">
+                      <span class="w-1.5 h-1.5 rounded-full bg-neutral-600"></span>
+                      Not connected
+                    </span>
+                  )}
+                </div>
+                {isConnected && platform.accountName && (
+                  <p class="text-xs text-neutral-500">
+                    @{platform.accountName}
+                    {platform.lastSyncedAt && (
+                      <> &bull; Last synced {platform.lastSyncedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</>
+                    )}
+                  </p>
+                )}
+                {!isConnected && (
+                  <p class="text-xs text-neutral-600">No account linked</p>
+                )}
+                {hasError && platform.lastSyncError && (
+                  <p class="mt-1 text-xs text-red-400/80">{platform.lastSyncError}</p>
+                )}
+              </div>
+            </div>
+
+            <!-- Right: actions -->
+            <div class="flex items-center gap-2 shrink-0">
+              {isConnected ? (
+                <>
+                  <button
+                    data-sync-btn={name}
+                    disabled={isSyncing}
+                    class="px-3 py-1.5 text-xs font-medium text-neutral-300 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-neutral-600 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSyncing ? "Syncing…" : "Sync now"}
+                  </button>
+                  <button
+                    data-disconnect-btn={name}
+                    class="px-3 py-1.5 text-xs font-medium text-red-400/70 hover:text-red-400 bg-transparent hover:bg-red-500/10 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all"
+                  >
+                    Disconnect
+                  </button>
+                </>
+              ) : (
+                <button
+                  data-connect-btn={name}
+                  class="px-3 py-1.5 text-xs font-semibold text-black bg-white hover:bg-neutral-100 rounded-lg transition-colors"
+                >
+                  Connect
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Info note -->
+  <p class="mt-6 text-xs text-neutral-700">
+    Statistics are synced every 6 hours. Connected accounts must be Professional (Instagram) or linked to an approved developer app (TikTok).
+  </p>
+
+</div>
+</AdminLayout>
+
+<script>
+  import { adminOrpc } from "../../../lib/admin-orpc";
+  import { PUBLIC_SERVER_URL } from "astro:env/client";
+
+  function showMsg(text: string, type: "success" | "error") {
+    const el = document.getElementById("status-msg")!;
+    el.textContent = text;
+    el.className = `mb-6 px-4 py-3 rounded-xl text-sm border ${
+      type === "success"
+        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+        : "bg-red-500/10 border-red-500/20 text-red-400"
+    }`;
+    el.classList.remove("hidden");
+    setTimeout(() => el.classList.add("hidden"), 4000);
+  }
+
+  // Connect
+  document.querySelectorAll("[data-connect-btn]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const name = (btn as HTMLElement).dataset.connectBtn!;
+      (btn as HTMLButtonElement).disabled = true;
+      (btn as HTMLButtonElement).textContent = "Redirecting…";
+      try {
+        const res = await fetch(`${PUBLIC_SERVER_URL}/api/platforms/${name}/connect`, {
+          headers: { Authorization: `Bearer ${document.cookie.split("; ").find(c => c.startsWith("auth_token="))?.split("=")[1] ?? ""}` },
+        });
+        if (!res.ok) throw new Error("OAuth not configured yet");
+        const { url } = await res.json();
+        window.location.href = url;
+      } catch (e: any) {
+        showMsg(e.message ?? "Failed to initiate connection", "error");
+        (btn as HTMLButtonElement).disabled = false;
+        (btn as HTMLButtonElement).textContent = "Connect";
+      }
+    });
+  });
+
+  // Sync now
+  document.querySelectorAll("[data-sync-btn]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const name = (btn as HTMLElement).dataset.syncBtn! as "tiktok" | "instagram" | "youtube";
+      (btn as HTMLButtonElement).disabled = true;
+      (btn as HTMLButtonElement).textContent = "Syncing…";
+      try {
+        await adminOrpc.platforms.triggerSync({ name });
+        showMsg("Sync queued successfully", "success");
+      } catch {
+        showMsg("Failed to trigger sync", "error");
+      } finally {
+        (btn as HTMLButtonElement).disabled = false;
+        (btn as HTMLButtonElement).textContent = "Sync now";
+      }
+    });
+  });
+
+  // Disconnect
+  document.querySelectorAll("[data-disconnect-btn]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const name = (btn as HTMLElement).dataset.disconnectBtn! as "tiktok" | "instagram" | "youtube";
+      if (!confirm(`Disconnect ${name}? This will stop stats syncing.`)) return;
+
+      (btn as HTMLButtonElement).disabled = true;
+      (btn as HTMLButtonElement).textContent = "…";
+      try {
+        await adminOrpc.platforms.disconnect({ name });
+        window.location.reload();
+      } catch {
+        showMsg("Failed to disconnect platform", "error");
+        (btn as HTMLButtonElement).disabled = false;
+        (btn as HTMLButtonElement).textContent = "Disconnect";
+      }
+    });
+  });
+</script>
