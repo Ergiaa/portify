@@ -18,3 +18,10 @@ export const editorProcedure = protectedProcedure.use(({ context, next }) => {
   }
   return next({ context });
 });
+
+export const ownerProcedure = protectedProcedure.use(({ context, next }) => {
+  if (context.auth.role !== "owner") {
+    throw new ORPCError("FORBIDDEN");
+  }
+  return next({ context });
+});
