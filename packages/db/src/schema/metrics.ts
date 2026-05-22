@@ -2,6 +2,7 @@ import {
   bigint,
   doublePrecision,
   index,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -25,6 +26,10 @@ export const platformMetrics = pgTable(
     likes: bigint("likes", { mode: "number" }).notNull().default(0),
     comments: bigint("comments", { mode: "number" }).notNull().default(0),
     shares: bigint("shares", { mode: "number" }).notNull().default(0),
+    saves: bigint("saves", { mode: "number" }).notNull().default(0),
+    reach: bigint("reach", { mode: "number" }).notNull().default(0),
+    impressions: bigint("impressions", { mode: "number" }).notNull().default(0),
+    rawData: jsonb("raw_data"),
     fetchedAt: timestamp("fetched_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
