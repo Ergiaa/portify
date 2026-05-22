@@ -6,6 +6,8 @@ const envelope = {
   position: z.number(),
 };
 
+const VARIANT = z.enum(["swiss", "editorial", "glass", "y2k", "bento"]).optional().default("swiss");
+
 const HeroSection = z.object({
   ...envelope,
   type: z.literal("hero"),
@@ -19,6 +21,7 @@ const HeroSection = z.object({
     ctaHref: z.string(),
     cta2Label: z.string().optional().default(""),
     cta2Href: z.string().optional().default(""),
+    variant: VARIANT,
   }),
 });
 
@@ -38,6 +41,7 @@ const AboutSection = z.object({
       .default([]),
     ctaLabel: z.string().optional().default(""),
     ctaHref: z.string().optional().default(""),
+    variant: VARIANT,
   }),
 });
 
@@ -54,6 +58,7 @@ const SkillsSection = z.object({
         level: z.number().min(0).max(100).default(80),
       })
     ),
+    variant: VARIANT,
   }),
 });
 
@@ -71,6 +76,7 @@ const StatsSection = z.object({
         icon: z.string().optional().default(""),
       })
     ),
+    variant: VARIANT,
   }),
 });
 
@@ -87,6 +93,7 @@ const ProjectsSection = z.object({
       .default(""),
     viewAllLabel: z.string().optional().default(""),
     viewAllHref: z.string().optional().default(""),
+    variant: VARIANT,
   }),
 });
 
@@ -100,6 +107,7 @@ const ContactSection = z.object({
     email: z.string(),
     phone: z.string().optional().default(""),
     socials: z.array(z.object({ platform: z.string(), url: z.string() })),
+    variant: VARIANT,
   }),
 });
 

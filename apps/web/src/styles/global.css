@@ -4,5 +4,26 @@
 /* See the TailwindCSS v4 docs for more info: https://tailwindcss.com/docs/v4-beta */
 
 @theme {
-  --font-sans: "Inter", sans-serif;
+  --font-sans: "Geist", sans-serif;
+  --font-mono: "Geist Mono", monospace;
+  --font-serif: "Newsreader", serif;
+  --font-display: "Instrument Serif", serif;
+  --font-pixel: "VT323", monospace;
+  --font-chrome: "Major Mono Display", monospace;
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
+  --font-space: "Space Grotesk", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
+
+  --color-paper: #f1ebdd;
+  --color-ink: #1a1410;
+  --color-burnt: #8a4a2a;
+
+  --color-y2k-bg: #0a0a16;
+  --color-y2k-pink: #ff7af2;
+  --color-y2k-cyan: #6effff;
+  --color-y2k-yellow: #ffce5b;
+
+  --color-bento-bg: #0d0d0f;
+  --color-bento-card: #16161a;
+  --color-bento-border: #232328;
 }

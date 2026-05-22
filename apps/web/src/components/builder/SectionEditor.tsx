@@ -49,6 +49,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
       </div>
       <div className="p-4">
         {section.type === "hero" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
           <div className={fld}><label className={lbl}>Heading</label>
             <input className={inp} value={section.config.heading} onChange={(e) => u({ heading: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Subheading</label>
@@ -74,6 +78,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
         </>}
 
         {section.type === "about" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title ?? "About me"} onChange={(e) => u({ title: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Name</label>
@@ -121,6 +129,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
         </>}
 
         {section.type === "skills" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title} onChange={(e) => u({ title: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Layout</label>
@@ -160,6 +172,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
         </>}
 
         {section.type === "stats" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title} onChange={(e) => u({ title: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Layout</label>
@@ -191,6 +207,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
         </>}
 
         {section.type === "projects" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title} onChange={(e) => u({ title: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Max items</label>
@@ -217,6 +237,10 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
         </>}
 
         {section.type === "contact" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title} onChange={(e) => u({ title: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Description</label>
