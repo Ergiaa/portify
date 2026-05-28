@@ -14,14 +14,15 @@ const imgIcel2             = "https://www.figma.com/api/mcp/asset/33306351-1fa8-
 
 import { db } from "@portify/db";
 import { portfolioConfig } from "@portify/db/schema/portfolio";
+import { contentItems } from "@portify/db/schema/content";
 import { PageConfigSchema } from "@portify/api/schemas/pageBuilder";
-import { eq, desc } from "drizzle-orm";
-import Hero from "../components/sections/Hero.astro";
-import About from "../components/sections/About.astro";
-import Skills from "../components/sections/Skills.astro";
-import Stats from "../components/sections/Stats.astro";
-import Projects from "../components/sections/Projects.astro";
-import Contact from "../components/sections/Contact.astro";
+import { eq, desc, and } from "drizzle-orm";
+import { HeroSection } from "../components/builder/sections/HeroSection";
+import { AboutSection } from "../components/builder/sections/AboutSection";
+import { SkillsSection } from "../components/builder/sections/SkillsSection";
+import { StatsSection } from "../components/builder/sections/StatsSection";
+import { ContactSection } from "../components/builder/sections/ContactSection";
+import { ProjectsSectionStatic } from "../components/builder/sections/ProjectsSectionStatic";
 
 const [latestConfig] = await db
   .select()
@@ -37,6 +38,22 @@ const parsedModules = latestConfig
 const activeSections = parsedModules
   ? parsedModules.filter((s) => s.enabled).sort((a, b) => a.position - b.position)
   : null;
+
+// Pre-fetch content items for any Projects section
+const projectsSectionConfig = activeSections?.find((s) => s.type === "projects");
+let fetchedItems: { id: string; title: string; type: string; platform: string | null; thumbnailUrl: string | null }[] = [];
+if (projectsSectionConfig && projectsSectionConfig.type === "projects") {
+  const { limit, filterType } = projectsSectionConfig.config;
+  const conditions = [eq(contentItems.status, "published")];
+  if (filterType) conditions.push(eq(contentItems.type, filterType as "video" | "article" | "podcast" | "design"));
+  fetchedItems = await db
+    .select({ id: contentItems.id, title: contentItems.title, type: contentItems.type,
+              platform: contentItems.platform, thumbnailUrl: contentItems.thumbnailUrl })
+    .from(contentItems)
+    .where(and(...conditions))
+    .orderBy(desc(contentItems.publishedAt))
+    .limit(limit);
+}
 ---
 
 <!doctype html>
@@ -65,14 +82,14 @@ const activeSections = parsedModules
   </head>
   <body>
     {activeSections ? (
-      <main style="font-family: 'Montserrat', sans-serif;">
+      <main>
         {activeSections.map((section) => {
-          if (section.type === "hero")     return <Hero     {...section.config} />;
-          if (section.type === "about")    return <About    {...section.config} />;
-          if (section.type === "skills")   return <Skills   {...section.config} />;
-          if (section.type === "stats")    return <Stats    {...section.config} />;
-          if (section.type === "projects") return <Projects {...section.config} />;
-          if (section.type === "contact")  return <Contact  {...section.config} />;
+          if (section.type === "hero")     return <HeroSection    config={section.config} />;
+          if (section.type === "about")    return <AboutSection   config={section.config} />;
+          if (section.type === "skills")   return <SkillsSection  config={section.config} />;
+          if (section.type === "stats")    return <StatsSection   config={section.config} />;
+          if (section.type === "contact")  return <ContactSection config={section.config} />;
+          if (section.type === "projects") return <ProjectsSectionStatic config={section.config} items={fetchedItems} />;
         })}
       </main>
     ) : (
