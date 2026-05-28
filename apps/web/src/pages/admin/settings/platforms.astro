@@ -40,6 +40,18 @@ const connected = Astro.url.searchParams.get("connected");
     </div>
   )}
 
+  {Astro.url.searchParams.get("error") && (
+    <div class="mb-6 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">
+      {{
+        access_denied: "You denied access to the platform.",
+        invalid_state: "Security check failed. Please try again.",
+        invalid_callback: "Invalid callback. Please try again.",
+        callback_failed: "Connection failed — check server logs.",
+        not_configured: "Platform credentials are not configured on the server.",
+      }[Astro.url.searchParams.get("error")!] ?? "Connection failed. Please try again."}
+    </div>
+  )}
+
   <!-- Error / info msg -->
   <div id="status-msg" class="hidden mb-6 px-4 py-3 rounded-xl text-sm border"></div>
 
