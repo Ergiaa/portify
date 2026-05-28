@@ -1,4 +1,10 @@
 ---
+interface MetricSnapshot {
+  views: number;
+  likes: number;
+  shares: number;
+}
+
 interface ContentItem {
   id: string;
   title: string;
@@ -8,6 +14,7 @@ interface ContentItem {
   thumbnailUrl: string | null;
   externalUrl: string | null;
   publishedAt: Date | null;
+  metrics?: MetricSnapshot | null;
 }
 
 interface Props {
@@ -15,6 +22,12 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+function fmt(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  return String(n);
+}
 
 const typeEmoji: Record<ContentItem["type"], string> = {
   video: "🎬",
@@ -136,6 +149,25 @@ const filterTypes = ["all", "video", "article", "podcast", "design"] as const;
                 {item.publishedAt.toLocaleDateString("en-US", { month: "short", year: "numeric" })}
               </span>
             )}
+            {item.metrics && (item.metrics.views > 0 || item.metrics.likes > 0) && (
+              <div class="flex items-center gap-3 mt-3 pt-3 border-t border-neutral-800/60">
+                {item.metrics.views > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-neutral-500">
+                    <span class="text-neutral-600">👁</span> {fmt(item.metrics.views)}
+                  </span>
+                )}
+                {item.metrics.likes > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-neutral-500">
+                    <span class="text-neutral-600">♥</span> {fmt(item.metrics.likes)}
+                  </span>
+                )}
+                {item.metrics.shares > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-neutral-500">
+                    <span class="text-neutral-600">↗</span> {fmt(item.metrics.shares)}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </a>
       ) : (
@@ -193,6 +225,25 @@ const filterTypes = ["all", "video", "article", "podcast", "design"] as const;
               <span class="text-neutral-600 text-xs mt-3 block">
                 {item.publishedAt.toLocaleDateString("en-US", { month: "short", year: "numeric" })}
               </span>
+            )}
+            {item.metrics && (item.metrics.views > 0 || item.metrics.likes > 0) && (
+              <div class="flex items-center gap-3 mt-3 pt-3 border-t border-neutral-800/60">
+                {item.metrics.views > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-neutral-500">
+                    <span class="text-neutral-600">👁</span> {fmt(item.metrics.views)}
+                  </span>
+                )}
+                {item.metrics.likes > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-neutral-500">
+                    <span class="text-neutral-600">♥</span> {fmt(item.metrics.likes)}
+                  </span>
+                )}
+                {item.metrics.shares > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-neutral-500">
+                    <span class="text-neutral-600">↗</span> {fmt(item.metrics.shares)}
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>

@@ -1,6 +1,7 @@
 ---
 import { db } from "@portify/db";
 import { contentItems } from "@portify/db/schema/content";
+import { platformMetrics } from "@portify/db/schema/metrics";
 import { eq, desc } from "drizzle-orm";
 import Layout from "../layouts/Layout.astro";
 import ContentGrid from "../components/ContentGrid.astro";
@@ -19,6 +20,23 @@ const items = await db
   .from(contentItems)
   .where(eq(contentItems.status, "published"))
   .orderBy(desc(contentItems.publishedAt));
+
+const latestMetrics = await db
+  .selectDistinctOn([platformMetrics.contentItemId], {
+    contentItemId: platformMetrics.contentItemId,
+    views: platformMetrics.views,
+    likes: platformMetrics.likes,
+    shares: platformMetrics.shares,
+  })
+  .from(platformMetrics)
+  .orderBy(platformMetrics.contentItemId, desc(platformMetrics.fetchedAt));
+
+const metricsMap = new Map(latestMetrics.map(m => [m.contentItemId, m]));
+
+const itemsWithMetrics = items.map(item => ({
+  ...item,
+  metrics: metricsMap.get(item.id) ?? null,
+}));
 ---
 
 <Layout title="Film Reviews">
@@ -40,6 +58,6 @@ const items = await db
       </p>
     </div>
 
-    <ContentGrid items={items} />
+    <ContentGrid items={itemsWithMetrics} />
   </main>
 </Layout>
