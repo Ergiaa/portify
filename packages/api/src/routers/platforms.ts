@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@portify/db";
 import { platforms } from "@portify/db/schema/platforms";
 import { ownerProcedure } from "../index";
+import { getSyncFn } from "../lib/sync-registry";
 
 const platformNameEnum = z.enum(["tiktok", "instagram", "youtube"]);
 
@@ -93,11 +94,12 @@ export const platformsRouter = {
         .from(platforms)
         .where(eq(platforms.name, input.name));
 
-      if (!row) {
-        throw new ORPCError("NOT_FOUND", { message: "Platform not connected" });
-      }
+      if (!row) throw new ORPCError("NOT_FOUND", { message: "Platform not connected" });
 
-      // Sync worker not yet implemented — placeholder
+      const syncFn = getSyncFn();
+      if (syncFn) {
+        syncFn(input.name).catch(console.error); // fire-and-forget
+      }
       return { queued: true };
     }),
 };
