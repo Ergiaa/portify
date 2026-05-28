@@ -21,6 +21,7 @@
     "@portify/env": "workspace:*",
     "dotenv": "catalog:",
     "hono": "catalog:",
+    "jose": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

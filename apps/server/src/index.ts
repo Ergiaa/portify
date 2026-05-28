@@ -9,6 +9,9 @@ import { env } from "@portify/env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import oauthRoutes from "./routes/oauth";
+import { syncPlatform, scheduleSyncAll } from "./workers/sync";
+import { registerSync } from "@portify/api/lib/sync-registry";
 
 const app = new Hono();
 
@@ -41,6 +44,10 @@ export const rpcHandler = new RPCHandler(appRouter, {
     }),
   ],
 });
+
+app.route("/", oauthRoutes);
+registerSync(syncPlatform);
+scheduleSyncAll(env.SYNC_INTERVAL_HOURS);
 
 app.use("/*", async (c, next) => {
   const context = await createContext({ context: c });
