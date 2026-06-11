@@ -10,6 +10,8 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import oauthRoutes from "./routes/oauth";
+import uploadsRoutes from "./routes/uploads";
+import mediaRoutes from "./routes/media";
 import { syncPlatform, scheduleSyncAll } from "./workers/sync";
 import { registerSync } from "@portify/api/lib/sync-registry";
 
@@ -46,6 +48,8 @@ export const rpcHandler = new RPCHandler(appRouter, {
 });
 
 app.route("/", oauthRoutes);
+app.route("/", uploadsRoutes);
+app.route("/", mediaRoutes);
 registerSync(syncPlatform);
 scheduleSyncAll(env.SYNC_INTERVAL_HOURS);
 
