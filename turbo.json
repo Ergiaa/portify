@@ -44,6 +44,16 @@
     },
     "db:down": {
       "cache": false
+    },
+    "garage:setup": {
+      "cache": false
+    },
+    "garage:restart": {
+      "cache": false
+    },
+    "garage:logs": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

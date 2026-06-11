@@ -33,7 +33,10 @@
     "db:start": "turbo -F @portify/db db:start",
     "db:watch": "turbo -F @portify/db db:watch",
     "db:stop": "turbo -F @portify/db db:stop",
-    "db:down": "turbo -F @portify/db db:down"
+    "db:down": "turbo -F @portify/db db:down",
+    "garage:setup": "turbo -F @portify/db garage:setup",
+    "garage:restart": "turbo -F @portify/db garage:restart",
+    "garage:logs": "turbo -F @portify/db garage:logs"
   },
   "dependencies": {
     "@portify/env": "workspace:*",
