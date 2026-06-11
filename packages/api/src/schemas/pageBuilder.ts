@@ -70,6 +70,7 @@ const StatsSection = z.object({
     title: z.string(),
     description: z.string().optional().default(""),
     layout: z.enum(["inline", "cards"]).optional().default("inline"),
+    statsSource: z.enum(["manual", "analytics"]).optional().default("manual"),
     stats: z.array(
       z.object({
         number: z.string(),

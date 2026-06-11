@@ -190,6 +190,17 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             /></div>
           <div className={fld}><label className={lbl}>Description</label>
             <input className={inp} value={section.config.description ?? ""} onChange={(e) => u({ description: e.target.value })} /></div>
+          <div className={fld}><label className={lbl}>Data source</label>
+            <SegmentedControl
+              options={["manual", "analytics"]}
+              value={section.config.statsSource ?? "manual"}
+              onChange={(v) => u({ statsSource: v })}
+            /></div>
+          {(section.config.statsSource ?? "manual") === "analytics" ? (
+            <p className="text-xs text-neutral-500 mb-4 leading-relaxed">
+              Stats will be pulled live from your TikTok analytics data (video views, likes, shares, comments).
+            </p>
+          ) : (
           <div className={fld}>
             <label className={lbl}>Stats</label>
             {section.config.stats.map((stat, i) => (
@@ -208,6 +219,7 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             <button className="text-xs text-indigo-400 hover:text-indigo-300"
               onClick={() => u({ stats: [...section.config.stats, { number: "", label: "", icon: "" }] })}>+ Add stat</button>
           </div>
+          )}
         </>}
 
         {section.type === "projects" && <>

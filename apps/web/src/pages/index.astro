@@ -15,8 +15,9 @@ const imgIcel2             = "https://www.figma.com/api/mcp/asset/33306351-1fa8-
 import { db } from "@portify/db";
 import { portfolioConfig } from "@portify/db/schema/portfolio";
 import { contentItems } from "@portify/db/schema/content";
+import { aggregateMetrics } from "@portify/db/schema/metrics";
 import { PageConfigSchema } from "@portify/api/schemas/pageBuilder";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { HeroSection } from "../components/builder/sections/HeroSection";
 import { AboutSection } from "../components/builder/sections/AboutSection";
 import { SkillsSection } from "../components/builder/sections/SkillsSection";
@@ -41,18 +42,52 @@ const activeSections = parsedModules
 
 // Pre-fetch content items for any Projects section
 const projectsSectionConfig = activeSections?.find((s) => s.type === "projects");
-let fetchedItems: { id: string; title: string; type: string; platform: string | null; thumbnailUrl: string | null }[] = [];
+let fetchedItems: { id: string; title: string; type: string; platform: string | null; thumbnailUrl: string | null; publishedAt: Date | null }[] = [];
 if (projectsSectionConfig && projectsSectionConfig.type === "projects") {
   const { limit, filterType } = projectsSectionConfig.config;
   const conditions = [eq(contentItems.status, "published")];
   if (filterType) conditions.push(eq(contentItems.type, filterType as "video" | "article" | "podcast" | "design"));
   fetchedItems = await db
-    .select({ id: contentItems.id, title: contentItems.title, type: contentItems.type,
-              platform: contentItems.platform, thumbnailUrl: contentItems.thumbnailUrl })
+    .select({
+      id: contentItems.id, title: contentItems.title, type: contentItems.type,
+      platform: contentItems.platform, thumbnailUrl: contentItems.thumbnailUrl,
+      publishedAt: contentItems.publishedAt,
+    })
     .from(contentItems)
     .where(and(...conditions))
     .orderBy(desc(contentItems.publishedAt))
     .limit(limit);
+}
+
+// Pre-fetch analytics stats if any Stats section uses analytics source
+const statsSectionConfig = activeSections?.find((s) => s.type === "stats");
+type AnalyticsStat = { number: string; label: string; icon: string };
+let analyticsStats: AnalyticsStat[] | undefined;
+if (statsSectionConfig?.type === "stats" && statsSectionConfig.config.statsSource === "analytics") {
+  const rows = await db
+    .select({
+      metricType: aggregateMetrics.metricType,
+      total: sql<number>`coalesce(sum(${aggregateMetrics.value}), 0)`,
+    })
+    .from(aggregateMetrics)
+    .where(eq(aggregateMetrics.dimension, "period"))
+    .groupBy(aggregateMetrics.metricType);
+
+  const totals: Record<string, number> = {};
+  for (const row of rows) totals[row.metricType] = Number(row.total);
+
+  function fmtNum(n: number): string {
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+    if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+    return n.toLocaleString();
+  }
+
+  analyticsStats = [
+    { number: fmtNum(totals["video_views"] ?? 0), label: "Video Views", icon: "📺" },
+    { number: fmtNum(totals["likes"] ?? 0), label: "Likes", icon: "❤️" },
+    { number: fmtNum(totals["shares"] ?? 0), label: "Shares", icon: "🔄" },
+    { number: fmtNum(totals["comments"] ?? 0), label: "Comments", icon: "💬" },
+  ];
 }
 ---
 
@@ -87,7 +122,7 @@ if (projectsSectionConfig && projectsSectionConfig.type === "projects") {
           if (section.type === "hero")     return <HeroSection    config={section.config} />;
           if (section.type === "about")    return <AboutSection   config={section.config} />;
           if (section.type === "skills")   return <SkillsSection  config={section.config} />;
-          if (section.type === "stats")    return <StatsSection   config={section.config} />;
+          if (section.type === "stats")    return <StatsSection   config={section.config} analyticsStats={analyticsStats} />;
           if (section.type === "contact")  return <ContactSection config={section.config} />;
           if (section.type === "projects") return <ProjectsSectionStatic config={section.config} items={fetchedItems} />;
         })}

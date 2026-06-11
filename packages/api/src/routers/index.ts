@@ -4,6 +4,7 @@ import { authRouter } from "./auth";
 import { contentRouter } from "./content";
 import { pageBuilderRouter } from "./pageBuilder";
 import { platformsRouter } from "./platforms";
+import { metricsRouter } from "./metrics";
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => "OK"),
@@ -11,6 +12,7 @@ export const appRouter = {
   content: contentRouter,
   pageBuilder: pageBuilderRouter,
   platforms: platformsRouter,
+  metrics: metricsRouter,
 };
 
 export type AppRouter = typeof appRouter;

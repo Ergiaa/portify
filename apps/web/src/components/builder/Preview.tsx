@@ -2,7 +2,7 @@ import type { SectionConfig } from "./types";
 import { HeroSection } from "./sections/HeroSection";
 import { AboutSection } from "./sections/AboutSection";
 import { SkillsSection } from "./sections/SkillsSection";
-import { StatsSection } from "./sections/StatsSection";
+import { StatsSectionLive } from "./sections/StatsSectionLive";
 import { ProjectsSection } from "./sections/ProjectsSection";
 import { ContactSection } from "./sections/ContactSection";
 
@@ -36,7 +36,7 @@ export function Preview({ sections, selectedId, onSelect }: Props) {
             {section.type === "hero" && <HeroSection config={section.config} />}
             {section.type === "about" && <AboutSection config={section.config} />}
             {section.type === "skills" && <SkillsSection config={section.config} />}
-            {section.type === "stats" && <StatsSection config={section.config} />}
+            {section.type === "stats" && <StatsSectionLive config={section.config} />}
             {section.type === "projects" && <ProjectsSection config={section.config} />}
             {section.type === "contact" && <ContactSection config={section.config} />}
           </div>

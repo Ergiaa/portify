@@ -35,6 +35,7 @@ interface Item {
   id: string; title: string; type: string; status: string;
   thumbnailUrl: string | null; description: string | null;
   externalUrl: string | null; platform: string | null;
+  publishedAt: Date | null;
 }
 
 const VARIANTS: Record<Variant, ComponentType<{ config: any; items: any[] }>> = {
@@ -60,7 +61,7 @@ export function ProjectsSection({ config }: Props) {
     title: item.title,
     type: item.type,
     platform: item.platform,
-    publishedAt: null,
+    publishedAt: item.publishedAt ?? null,
     thumbnailUrl: item.thumbnailUrl,
     duration: null,
   }));

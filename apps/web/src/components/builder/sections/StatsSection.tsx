@@ -6,18 +6,22 @@ import { StatsY2K } from "./stats/StatsY2K";
 import { StatsBento } from "./stats/StatsBento";
 
 type Variant = "swiss" | "editorial" | "glass" | "y2k" | "bento";
+type StatItem = { number: string; label: string; icon?: string };
 
 interface Props {
   config: {
     title: string;
     description?: string;
     layout?: string;
-    stats: { number: string; label: string; icon?: string }[];
+    statsSource?: "manual" | "analytics";
+    stats: StatItem[];
     variant?: Variant;
   };
+  // Pre-fetched analytics stats passed from SSR callers
+  analyticsStats?: StatItem[];
 }
 
-const VARIANTS: Record<Variant, ComponentType<{ config: Props["config"] }>> = {
+const VARIANTS: Record<Variant, ComponentType<{ config: any }>> = {
   swiss: StatsSwiss,
   editorial: StatsEditorial,
   glass: StatsGlass,
@@ -25,7 +29,12 @@ const VARIANTS: Record<Variant, ComponentType<{ config: Props["config"] }>> = {
   bento: StatsBento,
 };
 
-export function StatsSection({ config }: Props) {
+export function StatsSection({ config, analyticsStats }: Props) {
+  const effectiveStats =
+    config.statsSource === "analytics" && analyticsStats
+      ? analyticsStats
+      : config.stats;
+
   const V = VARIANTS[config.variant ?? "swiss"];
-  return <V config={config} />;
+  return <V config={{ ...config, stats: effectiveStats }} />;
 }
