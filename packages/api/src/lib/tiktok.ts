@@ -29,10 +29,19 @@ export async function refreshTikTokToken(platform: PlatformRow): Promise<Platfor
   }
 
   const json = (await res.json()) as {
-    data: { access_token: string; refresh_token: string; expires_in: number }
+    access_token?: string
+    refresh_token?: string
+    expires_in?: number
+    error?: { code: string; message: string }
   }
 
-  const { access_token, refresh_token, expires_in } = json.data
+  if (!json.access_token || !json.refresh_token || !json.expires_in) {
+    throw new Error(
+      `TikTok token refresh returned unexpected shape: ${JSON.stringify(json.error ?? json)}`
+    )
+  }
+
+  const { access_token, refresh_token, expires_in } = json
 
   await db
     .update(platforms)
@@ -62,9 +71,8 @@ export async function resolveTikTokUrl(url: string): Promise<string> {
     if (!host.includes("vt.tiktok.com") && !host.includes("vm.tiktok.com")) {
       return url
     }
-    const res = await fetch(url, { redirect: "manual" })
-    const location = res.headers.get("location")
-    return location ?? url
+    const res = await fetch(url, { redirect: "follow" })
+    return res.url || url
   } catch {
     return url
   }
