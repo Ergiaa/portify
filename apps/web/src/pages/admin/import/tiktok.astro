@@ -1,0 +1,477 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+
+// Use the server's clock (always correct) to build the year options.
+const serverYear = new Date().getFullYear();
+const yearOptions = Array.from({ length: 10 }, (_, i) => serverYear - i); // e.g. 2026 → 2017
+---
+
+<AdminLayout title="Import TikTok data">
+<div class="px-8 py-10 max-w-3xl">
+
+  <div class="mb-8">
+    <a href="/admin" class="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors mb-5">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Dashboard
+    </a>
+    <h1 class="text-2xl font-bold text-white">Import TikTok data</h1>
+    <p class="text-neutral-500 text-sm mt-1">
+      Export from TikTok Studio → Analytics → Overview, then drop the CSV here.
+    </p>
+  </div>
+
+  <!-- ── Step 1: Upload ── -->
+  <div id="step-upload">
+    <div
+      id="drop-zone"
+      class="relative w-full rounded-2xl border-2 border-dashed border-neutral-700 hover:border-neutral-500 transition-all cursor-pointer bg-neutral-950 flex flex-col items-center justify-center py-16 gap-4"
+    >
+      <div class="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-neutral-500">
+          <path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="text-center">
+        <p class="text-sm font-medium text-neutral-300">Drop your CSV here</p>
+        <p class="text-xs text-neutral-600 mt-1">or click to browse</p>
+      </div>
+      <p class="text-xs text-neutral-700">Any date range · Any length</p>
+    </div>
+    <input id="csv-input" type="file" accept=".csv,text/csv" class="hidden" />
+  </div>
+
+  <!-- ── Step 2: Preview ── -->
+  <div id="step-preview" class="hidden space-y-4">
+
+    <!-- File chip -->
+    <div class="flex items-center gap-3 bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-neutral-500 shrink-0">
+        <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="flex-1 min-w-0">
+        <p id="file-name" class="text-sm text-white truncate font-medium"></p>
+        <p id="file-size" class="text-xs text-neutral-500"></p>
+      </div>
+      <button id="clear-btn" class="text-neutral-600 hover:text-white transition-colors p-1 rounded-lg hover:bg-neutral-800">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Parse summary -->
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-6">
+
+      <!-- Headline stats -->
+      <div class="flex items-end gap-8">
+        <div>
+          <p id="row-count" class="text-4xl font-bold text-white tabular-nums"></p>
+          <p class="text-xs text-neutral-500 mt-1">days detected</p>
+        </div>
+        <div class="pb-1">
+          <p id="date-range" class="text-sm font-medium text-neutral-300 font-mono"></p>
+          <p class="text-xs text-neutral-600 mt-0.5">date range</p>
+        </div>
+      </div>
+
+      <!-- Year picker (only shown when dates have no year) -->
+      <div id="year-picker-row" class="hidden flex items-center gap-3 p-3 bg-amber-500/5 border border-amber-500/15 rounded-xl">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="text-amber-400 shrink-0">
+          <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="text-xs text-amber-300 flex-1">Dates have no year — starting from:</p>
+        <select
+          id="start-year"
+          class="bg-neutral-800 border border-neutral-700 text-white text-xs font-mono rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+        >
+          {yearOptions.map(y => (
+            <option value={y} selected={y === serverYear}>{y}</option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Column badges -->
+      <div>
+        <p class="text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-2.5">Columns</p>
+        <div id="column-badges" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Preview table -->
+      <div>
+        <p class="text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-2.5">Preview</p>
+        <div class="overflow-x-auto rounded-xl border border-neutral-800">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-neutral-800">
+                <th class="px-3 py-2.5 text-left text-neutral-500 font-medium whitespace-nowrap">Date</th>
+                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Video Views</th>
+                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Profile Views</th>
+                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Likes</th>
+                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Comments</th>
+                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Shares</th>
+              </tr>
+            </thead>
+            <tbody id="preview-tbody"></tbody>
+          </table>
+        </div>
+        <p id="more-rows" class="text-xs text-neutral-600 mt-2 text-right"></p>
+      </div>
+
+      <!-- Warnings -->
+      <div id="warnings" class="hidden p-4 bg-amber-500/5 border border-amber-500/15 rounded-xl space-y-1">
+        <p class="text-xs font-semibold text-amber-400">Warnings</p>
+        <ul id="warnings-list" class="text-xs text-neutral-400 space-y-0.5 list-disc list-inside"></ul>
+      </div>
+
+      <!-- Unknown columns -->
+      <div id="unknown-cols" class="hidden p-4 bg-neutral-950 rounded-xl">
+        <p class="text-xs text-neutral-500">
+          <span class="font-semibold text-neutral-400">Ignored columns:</span>
+          <span id="unknown-list" class="font-mono ml-1"></span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="parse-error" class="hidden px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400"></div>
+
+    <!-- CTA -->
+    <button
+      id="import-btn"
+      class="w-full bg-white text-black text-sm font-semibold px-5 py-3 rounded-xl hover:bg-neutral-100 transition-colors"
+    >
+      Import <span id="import-count"></span> days
+    </button>
+  </div>
+
+  <!-- ── Step 3: Importing ── -->
+  <div id="step-importing" class="hidden">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-12 flex flex-col items-center gap-4">
+      <div class="w-8 h-8 border-2 border-neutral-700 border-t-white rounded-full animate-spin"></div>
+      <p class="text-sm text-neutral-400">Importing…</p>
+    </div>
+  </div>
+
+  <!-- ── Step 4: Done ── -->
+  <div id="step-done" class="hidden space-y-4">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-5">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400 text-sm">✓</div>
+        <h2 class="text-sm font-semibold text-white">Import complete</h2>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-neutral-950 rounded-xl p-4">
+          <p id="result-inserted" class="text-2xl font-bold text-emerald-400 tabular-nums">—</p>
+          <p class="text-xs text-neutral-500 mt-0.5">Days inserted</p>
+        </div>
+        <div class="bg-neutral-950 rounded-xl p-4">
+          <p id="result-skipped" class="text-2xl font-bold text-neutral-500 tabular-nums">—</p>
+          <p class="text-xs text-neutral-500 mt-0.5">Already existed</p>
+        </div>
+      </div>
+
+      <p id="result-range" class="text-xs text-neutral-600 font-mono"></p>
+
+      <div id="result-unknown" class="hidden text-xs text-neutral-500">
+        <span class="font-semibold text-neutral-400">Ignored columns:</span>
+        <span id="result-unknown-list" class="font-mono ml-1"></span>
+      </div>
+
+      <div class="flex items-center justify-between pt-1">
+        <button id="import-another-btn" class="text-sm text-neutral-500 hover:text-white transition-colors">
+          ← Import another file
+        </button>
+        <a
+          href="/admin/analytics/tiktok"
+          class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+        >
+          View analytics →
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</AdminLayout>
+
+<script>
+import { parseTikTokCsv, type TikTokDailyRow, type CsvParseOptions } from "@portify/api/lib/tiktok-csv";
+
+// ── Elements ──────────────────────────────────────────────────────────────────
+const stepUpload    = document.getElementById("step-upload")!;
+const stepPreview   = document.getElementById("step-preview")!;
+const stepImporting = document.getElementById("step-importing")!;
+const stepDone      = document.getElementById("step-done")!;
+
+const dropZone      = document.getElementById("drop-zone")!;
+const csvInput      = document.getElementById("csv-input") as HTMLInputElement;
+const clearBtn      = document.getElementById("clear-btn")!;
+const importBtn     = document.getElementById("import-btn")!;
+const importAnotherBtn = document.getElementById("import-another-btn")!;
+
+// ── State ─────────────────────────────────────────────────────────────────────
+function showStep(step: "upload" | "preview" | "importing" | "done") {
+  stepUpload.classList.toggle("hidden",    step !== "upload");
+  stepPreview.classList.toggle("hidden",   step !== "preview");
+  stepImporting.classList.toggle("hidden", step !== "importing");
+  stepDone.classList.toggle("hidden",      step !== "done");
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmtDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[m! - 1]} ${d}, ${y}`;
+}
+
+function fmtNum(n: number) {
+  return n.toLocaleString();
+}
+
+function fmtFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+const ALL_METRICS: { key: keyof Omit<TikTokDailyRow, "date">; label: string }[] = [
+  { key: "videoViews",   label: "Video Views"   },
+  { key: "profileViews", label: "Profile Views" },
+  { key: "likes",        label: "Likes"         },
+  { key: "comments",     label: "Comments"      },
+  { key: "shares",       label: "Shares"        },
+  { key: "netFollowers", label: "Net Followers" },
+];
+
+// ── Drop zone ─────────────────────────────────────────────────────────────────
+dropZone.addEventListener("click", () => csvInput.click());
+
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropZone.classList.add("border-indigo-500", "bg-indigo-950/20");
+});
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("border-indigo-500", "bg-indigo-950/20");
+});
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("border-indigo-500", "bg-indigo-950/20");
+  const f = e.dataTransfer?.files[0];
+  if (f) loadFile(f);
+});
+
+csvInput.addEventListener("change", () => {
+  const f = csvInput.files?.[0];
+  if (f) loadFile(f);
+});
+
+function resetToUpload() {
+  csvInput.value     = "";
+  currentFile        = null;
+  currentFileText    = null;
+  yearPickerTouched  = false;
+  startYearSel.selectedIndex = 0;
+  showStep("upload");
+}
+
+clearBtn.addEventListener("click",        resetToUpload);
+importAnotherBtn.addEventListener("click", resetToUpload);
+
+// ── Year picker ───────────────────────────────────────────────────────────────
+const yearPickerRow = document.getElementById("year-picker-row")!;
+const startYearSel  = document.getElementById("start-year") as HTMLSelectElement;
+
+startYearSel.addEventListener("change", () => {
+  yearPickerTouched = true;
+  if (currentFileText && currentFile) renderPreview(currentFile, currentFileText);
+});
+
+// ── Parse & preview ───────────────────────────────────────────────────────────
+let currentFile: File | null = null;
+let currentFileText: string | null = null;
+let yearPickerTouched = false; // true only after user manually changes the picker
+
+function loadFile(file: File) {
+  yearPickerTouched = false;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentFile     = file;
+    currentFileText = e.target?.result as string;
+    renderPreview(file, currentFileText);
+  };
+  reader.readAsText(file);
+}
+
+function renderPreview(file: File, text: string) {
+  // Only pass an explicit startYear when the user has manually chosen one.
+  // Otherwise let the parser auto-detect so the picker shows the right default.
+  const opts: CsvParseOptions = yearPickerTouched
+    ? { startYear: Number(startYearSel.value) }
+    : {};
+  const result = parseTikTokCsv(text, opts);
+  const { rows, detectedMetrics, unknownColumns, errors, yearInferred, detectedStartYear } = result;
+
+  // Show/hide picker; sync its value to the auto-detected year on first load
+  yearPickerRow.classList.toggle("hidden", !yearInferred);
+  if (yearInferred && detectedStartYear !== null && !yearPickerTouched) {
+    // Ensure the detected year exists as an option (server may not have included it)
+    if (!Array.from(startYearSel.options).some(o => o.value === String(detectedStartYear))) {
+      const opt = document.createElement("option");
+      opt.value = String(detectedStartYear);
+      opt.textContent = String(detectedStartYear);
+      startYearSel.appendChild(opt);
+    }
+    startYearSel.value = String(detectedStartYear);
+  }
+
+  // File chip
+  (document.getElementById("file-name")!).textContent = file.name;
+  (document.getElementById("file-size")!).textContent = fmtFileSize(file.size);
+
+  // Parse error — nothing usable
+  const parseErrorEl = document.getElementById("parse-error")!;
+  if (rows.length === 0) {
+    parseErrorEl.textContent = errors[0] ?? "Could not parse this file. Check that it's a TikTok Overview CSV.";
+    parseErrorEl.classList.remove("hidden");
+    (document.getElementById("import-btn")! as HTMLButtonElement).disabled = true;
+    (document.getElementById("import-btn")! as HTMLButtonElement).classList.add("opacity-40", "cursor-not-allowed");
+  } else {
+    parseErrorEl.classList.add("hidden");
+    (document.getElementById("import-btn")! as HTMLButtonElement).disabled = false;
+    (document.getElementById("import-btn")! as HTMLButtonElement).classList.remove("opacity-40", "cursor-not-allowed");
+  }
+
+  // Headline stats
+  (document.getElementById("row-count")!).textContent = String(rows.length);
+  (document.getElementById("import-count")!).textContent = String(rows.length);
+
+  if (rows.length > 0) {
+    const first = rows[0]!.date;
+    const last  = rows[rows.length - 1]!.date;
+    (document.getElementById("date-range")!).textContent =
+      first === last ? fmtDate(first) : `${fmtDate(first)} → ${fmtDate(last)}`;
+  } else {
+    (document.getElementById("date-range")!).textContent = "—";
+  }
+
+  // Column badges
+  const badgesEl = document.getElementById("column-badges")!;
+  badgesEl.innerHTML = ALL_METRICS.map(m => {
+    const found = detectedMetrics.includes(m.key);
+    return found
+      ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-400">
+           <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+           ${m.label}
+         </span>`
+      : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-neutral-800 text-xs font-medium text-neutral-600">
+           <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 3L7 7M7 3L3 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+           ${m.label}
+         </span>`;
+  }).join("");
+
+  // Preview table (first 8 rows)
+  const PREVIEW_MAX = 8;
+  const tbody = document.getElementById("preview-tbody")!;
+  tbody.innerHTML = rows.slice(0, PREVIEW_MAX).map(row =>
+    `<tr class="border-b border-neutral-800/50 last:border-0">
+       <td class="px-3 py-2 text-neutral-300 whitespace-nowrap font-mono">${fmtDate(row.date)}</td>
+       <td class="px-3 py-2 text-right text-white tabular-nums">${fmtNum(row.videoViews)}</td>
+       <td class="px-3 py-2 text-right text-neutral-400 tabular-nums">${fmtNum(row.profileViews)}</td>
+       <td class="px-3 py-2 text-right text-pink-400 tabular-nums">${fmtNum(row.likes)}</td>
+       <td class="px-3 py-2 text-right text-neutral-400 tabular-nums">${fmtNum(row.comments)}</td>
+       <td class="px-3 py-2 text-right text-sky-400 tabular-nums">${fmtNum(row.shares)}</td>
+     </tr>`
+  ).join("");
+
+  const moreEl = document.getElementById("more-rows")!;
+  if (rows.length > PREVIEW_MAX) {
+    moreEl.textContent = `+${rows.length - PREVIEW_MAX} more rows not shown`;
+    moreEl.classList.remove("hidden");
+  } else {
+    moreEl.classList.add("hidden");
+  }
+
+  // Warnings (parse errors on specific rows)
+  const warningsEl = document.getElementById("warnings")!;
+  const warningsList = document.getElementById("warnings-list")!;
+  if (errors.length > 0) {
+    warningsList.innerHTML = errors.slice(0, 5).map(e => `<li>${e}</li>`).join("");
+    if (errors.length > 5) {
+      warningsList.innerHTML += `<li>…and ${errors.length - 5} more</li>`;
+    }
+    warningsEl.classList.remove("hidden");
+  } else {
+    warningsEl.classList.add("hidden");
+  }
+
+  // Unknown columns
+  const unknownEl = document.getElementById("unknown-cols")!;
+  if (unknownColumns.length > 0) {
+    (document.getElementById("unknown-list")!).textContent = unknownColumns.join(", ");
+    unknownEl.classList.remove("hidden");
+  } else {
+    unknownEl.classList.add("hidden");
+  }
+
+  showStep("preview");
+}
+
+// ── Import ─────────────────────────────────────────────────────────────────────
+importBtn.addEventListener("click", async () => {
+  const file = csvInput.files?.[0];
+  if (!file) return;
+
+  showStep("importing");
+
+  const token = document.cookie.split("; ")
+    .find(c => c.startsWith("auth_token="))?.split("=")[1] ?? "";
+  const fd = new FormData();
+  fd.append("file", file);
+  if (yearPickerTouched) fd.append("startYear", startYearSel.value);
+
+  try {
+    const res = await fetch(`${import.meta.env.PUBLIC_SERVER_URL}/uploads/tiktok-csv`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({})) as any;
+      throw new Error(err.error ?? `Server error ${res.status}`);
+    }
+
+    const data = await res.json() as {
+      inserted: number;
+      skipped: number;
+      dateRange: { from: string; to: string } | null;
+      unknownColumns: string[];
+      errors: string[];
+    };
+
+    (document.getElementById("result-inserted")!).textContent = String(data.inserted);
+    (document.getElementById("result-skipped")!).textContent  = String(data.skipped);
+
+    const rangeEl = document.getElementById("result-range")!;
+    rangeEl.textContent = data.dateRange
+      ? `${fmtDate(data.dateRange.from)} → ${fmtDate(data.dateRange.to)}`
+      : "";
+
+    const resultUnknownEl = document.getElementById("result-unknown")!;
+    if (data.unknownColumns.length > 0) {
+      (document.getElementById("result-unknown-list")!).textContent = data.unknownColumns.join(", ");
+      resultUnknownEl.classList.remove("hidden");
+    } else {
+      resultUnknownEl.classList.add("hidden");
+    }
+
+    showStep("done");
+  } catch (err: any) {
+    // Go back to preview and show error
+    const parseErrorEl = document.getElementById("parse-error")!;
+    parseErrorEl.textContent = err?.message ?? "Something went wrong. Please try again.";
+    parseErrorEl.classList.remove("hidden");
+    showStep("preview");
+  }
+});
+</script>
