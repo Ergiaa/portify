@@ -1,0 +1,16 @@
+---
+import "../../../styles/global.css";
+import { PageBuilder } from "../../../components/builder/PageBuilder";
+---
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Builder — Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-neutral-950 text-white overflow-hidden">
+    <PageBuilder client:only="react" />
+  </body>
+</html>

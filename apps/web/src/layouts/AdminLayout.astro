@@ -7,14 +7,20 @@ interface Props {
 const { title = "Admin" } = Astro.props;
 const pathname = Astro.url.pathname;
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: "⊞" },
-  { href: "/admin/content", label: "Content", icon: "≡" },
-  { href: "/admin/builder", label: "Page Builder", icon: "⊡" },
-  { href: "/admin/settings/platforms", label: "Platforms", icon: "⇌" },
-  { href: "/admin/import/tiktok",    label: "Import data", icon: "⊕" },
-  { href: "/admin/analytics/tiktok", label: "Analytics",   icon: "↗" },
+const workspace = [
+  { href: "/admin",         label: "Dashboard" },
+  { href: "/admin/content", label: "Content" },
+  { href: "/admin/builder", label: "Page Builder" },
 ];
+const integrations = [
+  { href: "/admin/settings/platforms", label: "Platforms" },
+  { href: "/admin/import/tiktok",      label: "Import data" },
+  { href: "/admin/analytics/tiktok",   label: "Analytics" },
+];
+
+function isActive(href: string) {
+  return href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+}
 ---
 
 <!doctype html>
@@ -24,58 +30,225 @@ const navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} — Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style is:global>
+      :root {
+        --bg:           oklch(10% 0.01 44);
+        --surface-1:    oklch(13% 0.014 44);
+        --surface-2:    oklch(16% 0.016 44);
+        --surface-3:    oklch(20.5% 0.019 44);
+        --accent:       oklch(71% 0.17 57);
+        --accent-muted: oklch(71% 0.17 57 / 0.12);
+        --text-1:       oklch(93% 0.006 44);
+        --text-2:       oklch(65% 0.006 44);
+        --text-3:       oklch(40% 0.006 44);
+        --border:       oklch(100% 0 0 / 0.08);
+        --green:        oklch(70% 0.17 145);
+        --green-muted:  oklch(70% 0.17 145 / 0.12);
+        --red:          oklch(65% 0.2 25);
+        --red-muted:    oklch(65% 0.2 25 / 0.12);
+        --blue:         oklch(65% 0.18 240);
+        --blue-muted:   oklch(65% 0.18 240 / 0.12);
+        --r-xs: 2px;
+        --r-sm: 3px;
+        --r-md: 5px;
+        --r-lg: 8px;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text-1);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Admin label convention */
+      .admin-label {
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--text-3);
+      }
+
+      /* Forge input focus */
+      .forge-input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-color: var(--accent) !important;
+      }
+
+      /* Forge button base */
+      .forge-btn { transition: opacity 0.15s; cursor: pointer; border: none; font-family: inherit; }
+      .forge-btn:hover { opacity: 0.78; }
+      .forge-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .forge-btn-primary {
+        background: var(--accent);
+        color: oklch(10% 0.01 44);
+        font-weight: 600;
+        border-radius: var(--r-sm);
+        padding: 0.5rem 1rem;
+        font-size: 13px;
+      }
+      .forge-btn-secondary {
+        background: var(--surface-3);
+        color: var(--text-1);
+        font-weight: 500;
+        border-radius: var(--r-sm);
+        padding: 0.5rem 1rem;
+        font-size: 13px;
+        border: 1px solid var(--border) !important;
+      }
+      .forge-btn-ghost {
+        background: transparent;
+        color: var(--text-2);
+        font-weight: 500;
+        border-radius: var(--r-sm);
+        padding: 0.5rem 1rem;
+        font-size: 13px;
+      }
+      .forge-btn-ghost:hover { color: var(--text-1); opacity: 1; }
+      .forge-btn-danger {
+        background: var(--red-muted);
+        color: var(--red);
+        font-weight: 500;
+        border-radius: var(--r-sm);
+        padding: 0.5rem 1rem;
+        font-size: 13px;
+        border: 1px solid oklch(65% 0.2 25 / 0.2) !important;
+      }
+      .forge-btn-success {
+        background: var(--green-muted);
+        color: var(--green);
+        font-weight: 500;
+        border-radius: var(--r-sm);
+        padding: 0.5rem 1rem;
+        font-size: 13px;
+        border: 1px solid oklch(70% 0.17 145 / 0.2) !important;
+      }
+
+      /* Forge field inputs */
+      .forge-field {
+        width: 100%;
+        background: var(--surface-1);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        padding: 0.5rem 0.75rem;
+        font-size: 13px;
+        color: var(--text-1);
+        font-family: inherit;
+      }
+      .forge-field::placeholder { color: var(--text-3); }
+      .forge-field:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-color: var(--accent);
+      }
+
+      /* Forge card */
+      .forge-card {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        padding: 1.25rem;
+      }
+
+      /* Forge badge */
+      .forge-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .forge-badge-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+    </style>
   </head>
-  <body class="min-h-screen bg-neutral-950 text-white flex" style="-webkit-font-smoothing:antialiased;">
+  <body class="min-h-screen flex" style="-webkit-font-smoothing:antialiased;">
 
     <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 h-full w-56 bg-neutral-900 border-r border-neutral-800 flex flex-col z-10">
+    <aside class="fixed top-0 left-0 h-full flex flex-col z-10" style="width:208px;background:var(--surface-1);border-right:1px solid var(--border);">
       <!-- Brand -->
-      <div class="px-5 py-5 border-b border-neutral-800">
+      <div class="px-5 py-5" style="border-bottom:1px solid var(--border);">
         <a href="/admin" class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">P</div>
-          <span class="text-sm font-semibold text-white">Portify</span>
+          <div class="flex items-center justify-center text-sm font-bold" style="width:26px;height:26px;border-radius:var(--r-xs);background:var(--accent);color:oklch(10% 0.01 44);">P</div>
+          <span class="text-sm font-semibold" style="color:var(--text-1);">Portify</span>
         </a>
       </div>
 
       <!-- Nav -->
-      <nav class="flex-1 px-3 py-4 flex flex-col gap-0.5">
-        {navItems.map(item => {
-          const isActive = item.href === "/admin"
-            ? pathname === "/admin"
-            : pathname.startsWith(item.href);
-          return (
-            <a
-              href={item.href}
-              class:list={[
-                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors",
-                isActive
-                  ? "bg-neutral-800 text-white font-medium"
-                  : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
-              ]}
-            >
-              <span class="text-base leading-none">{item.icon}</span>
-              {item.label}
-            </a>
-          );
-        })}
+      <nav class="flex-1 px-4 py-4 flex flex-col gap-4 overflow-y-auto">
+        <!-- Workspace group -->
+        <div>
+          <p class="px-2 mb-1.5 admin-label">Workspace</p>
+          <div class="flex flex-col gap-0.5">
+            {workspace.map(item => {
+              const active = isActive(item.href);
+              return (
+                <a
+                  href={item.href}
+                  class="block px-2 py-1.5 text-sm transition-colors"
+                  style={active
+                    ? `color:var(--text-1);font-weight:500;border-left:2px solid var(--accent);padding-left:calc(0.5rem - 2px);`
+                    : `color:var(--text-2);border-left:2px solid transparent;padding-left:calc(0.5rem - 2px);`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Integrations group -->
+        <div>
+          <p class="px-2 mb-1.5 admin-label">Integrations</p>
+          <div class="flex flex-col gap-0.5">
+            {integrations.map(item => {
+              const active = isActive(item.href);
+              return (
+                <a
+                  href={item.href}
+                  class="block px-2 py-1.5 text-sm transition-colors"
+                  style={active
+                    ? `color:var(--text-1);font-weight:500;border-left:2px solid var(--accent);padding-left:calc(0.5rem - 2px);`
+                    : `color:var(--text-2);border-left:2px solid transparent;padding-left:calc(0.5rem - 2px);`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </div>
+        </div>
       </nav>
 
       <!-- Footer -->
-      <div class="px-4 py-4 border-t border-neutral-800 flex flex-col gap-1">
-        <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-neutral-500 hover:text-white hover:bg-neutral-800/50 transition-colors">
-          ← View site
+      <div class="px-4 py-4 flex flex-col gap-0.5" style="border-top:1px solid var(--border);">
+        <a href="/" class="block px-2 py-1.5 text-xs transition-colors" style="color:var(--text-3);">
+          View site
         </a>
         <button
           id="logout-btn"
-          class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors text-left w-full"
+          class="block px-2 py-1.5 text-xs text-left w-full transition-colors"
+          style="color:var(--text-3);background:transparent;border:none;cursor:pointer;font-family:inherit;"
         >
-          ⎋ Log out
+          Log out
         </button>
       </div>
     </aside>
 
     <!-- Main -->
-    <main class="flex-1 ml-56 min-h-screen">
+    <main class="flex-1 min-h-screen" style="margin-left:208px;">
       <slot />
     </main>
 
@@ -83,8 +256,38 @@ const navItems = [
 </html>
 
 <script>
-  document.getElementById("logout-btn")?.addEventListener("click", () => {
+  const logoutBtn = document.getElementById("logout-btn");
+  logoutBtn?.addEventListener("click", () => {
     document.cookie = "auth_token=; path=/; max-age=0; SameSite=Strict";
     window.location.href = "/admin/login";
+  });
+
+  // Hover states for sidebar links
+  document.querySelectorAll("aside a, aside button").forEach((el) => {
+    const isActive = (el as HTMLElement).style.color?.includes("text-1") ||
+      (el as HTMLElement).style.fontWeight === "500";
+    el.addEventListener("mouseenter", () => {
+      if (!(el as HTMLElement).style.fontWeight?.includes("500")) {
+        (el as HTMLElement).style.color = "var(--text-1)";
+      }
+    });
+    el.addEventListener("mouseleave", () => {
+      if (!(el as HTMLElement).style.fontWeight?.includes("500")) {
+        (el as HTMLElement).style.color = "var(--text-3)";
+      }
+    });
+  });
+
+  document.querySelectorAll("aside nav a").forEach((el) => {
+    el.addEventListener("mouseenter", () => {
+      if (!(el as HTMLElement).style.fontWeight?.includes("500")) {
+        (el as HTMLElement).style.color = "var(--text-1)";
+      }
+    });
+    el.addEventListener("mouseleave", () => {
+      if (!(el as HTMLElement).style.fontWeight?.includes("500")) {
+        (el as HTMLElement).style.color = "var(--text-2)";
+      }
+    });
   });
 </script>

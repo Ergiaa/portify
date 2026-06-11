@@ -1,16 +1,36 @@
 ---
-import "../../styles/global.css";
-import { PageBuilder } from "../../components/builder/PageBuilder";
+import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
-<!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page Builder — Admin</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  </head>
-  <body class="bg-neutral-950 text-white overflow-hidden">
-    <PageBuilder client:only="react" />
-  </body>
-</html>
+
+<AdminLayout title="Page Builder">
+<div class="px-8 py-10">
+
+  <div class="mb-7">
+    <h1 class="font-bold" style="font-size:21px;color:var(--text-1);">Page Builder</h1>
+    <p class="text-sm mt-1" style="color:var(--text-2);">Customize your portfolio's public pages.</p>
+  </div>
+
+  <div class="flex flex-col items-center justify-center gap-5 py-16" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
+    <div style="color:var(--text-3);">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <path d="M8 21h8M12 17v4"/>
+      </svg>
+    </div>
+    <div class="text-center">
+      <p class="text-sm font-semibold mb-1" style="color:var(--text-1);">Page Builder opens in a separate editor</p>
+      <p class="text-xs" style="color:var(--text-2);">Click the button below to open the visual editor in a new tab.</p>
+    </div>
+    <a
+      href="/admin/builder/editor"
+      target="_blank"
+      rel="noopener"
+      class="forge-btn forge-btn-primary"
+      style="text-decoration:none;margin-top:0.25rem;"
+    >
+      Open editor
+    </a>
+  </div>
+
+</div>
+</AdminLayout>

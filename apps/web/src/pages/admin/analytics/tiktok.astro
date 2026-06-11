@@ -25,12 +25,8 @@ for (const m of rawRows) {
   if (!byDate.has(m.dimensionValue)) {
     byDate.set(m.dimensionValue, {
       date: m.dimensionValue,
-      videoViews: 0,
-      profileViews: 0,
-      netFollowers: 0,
-      likes: 0,
-      comments: 0,
-      shares: 0,
+      videoViews: 0, profileViews: 0, netFollowers: 0,
+      likes: 0, comments: 0, shares: 0,
     });
   }
   const row = byDate.get(m.dimensionValue)!;
@@ -54,25 +50,22 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
 <div class="px-8 py-10 max-w-6xl">
 
   <!-- Header -->
-  <div class="mb-8">
-    <a
-      href="/admin/import/tiktok"
-      class="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors mb-5"
-    >
+  <div class="mb-7">
+    <a href="/admin/import/tiktok" class="inline-flex items-center gap-1.5 text-xs mb-5 transition-colors" style="color:var(--text-3);">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Import data
     </a>
 
     <div class="flex items-start justify-between gap-4 flex-wrap">
       <div>
-        <h1 class="text-2xl font-bold text-white">TikTok Analytics</h1>
-        <p id="date-range-label" class="text-neutral-500 text-sm mt-1 h-5"></p>
+        <h1 class="font-bold" style="font-size:21px;color:var(--text-1);">TikTok Analytics</h1>
+        <p id="date-range-label" class="text-sm mt-1" style="color:var(--text-2);min-height:1.25rem;"></p>
       </div>
 
       {hasData && (
         <div class="flex flex-col items-end gap-2">
-          <!-- Preset + Custom buttons -->
-          <div class="flex items-center gap-1 bg-neutral-900 border border-neutral-800 rounded-xl p-1">
+          <!-- Range tabs -->
+          <div class="flex items-center gap-0" style="border:1px solid var(--border);border-radius:var(--r-sm);padding:3px;background:var(--surface-2);">
             {[
               { key: "7d",     label: "7D" },
               { key: "30d",    label: "30D" },
@@ -83,35 +76,23 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
             ].map((r, i) => (
               <button
                 data-range={r.key}
-                class:list={[
-                  "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                  i === 4
-                    ? "bg-neutral-800 text-white"
-                    : "text-neutral-500 hover:text-neutral-300",
-                ]}
+                class="px-3 py-1.5 text-xs font-medium transition-colors"
+                style={i === 4
+                  ? `background:var(--surface-3);color:var(--text-1);border-radius:var(--r-xs);border:none;cursor:pointer;font-family:inherit;`
+                  : `background:transparent;color:var(--text-2);border:none;cursor:pointer;font-family:inherit;border-radius:var(--r-xs);`}
               >
                 {r.label}
               </button>
             ))}
           </div>
 
-          <!-- Custom date inputs — hidden until Custom is selected -->
+          <!-- Custom date inputs -->
           <div id="custom-range" class="hidden items-center gap-2">
-            <input
-              id="custom-from"
-              type="date"
-              min={minDate}
-              max={maxDate}
-              class="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-1.5 text-xs text-white [color-scheme:dark] focus:outline-none focus:border-neutral-500 transition-colors"
-            />
-            <span class="text-neutral-600 text-xs">→</span>
-            <input
-              id="custom-to"
-              type="date"
-              min={minDate}
-              max={maxDate}
-              class="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-1.5 text-xs text-white [color-scheme:dark] focus:outline-none focus:border-neutral-500 transition-colors"
-            />
+            <input id="custom-from" type="date" min={minDate} max={maxDate}
+              class="forge-field" style="width:auto;padding:0.3rem 0.75rem;font-size:12px;color-scheme:dark;" />
+            <span class="text-xs" style="color:var(--text-3);">→</span>
+            <input id="custom-to" type="date" min={minDate} max={maxDate}
+              class="forge-field" style="width:auto;padding:0.3rem 0.75rem;font-size:12px;color-scheme:dark;" />
           </div>
         </div>
       )}
@@ -120,50 +101,43 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
 
   {hasData ? (
     <>
-      <!-- Summary cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
-        <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-          <p id="stat-video-views" class="text-xl font-bold mb-0.5 tabular-nums text-indigo-400">—</p>
-          <p class="text-xs text-neutral-500 mt-1">Total Video Views</p>
-        </div>
-        <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-          <p id="stat-avg-views" class="text-xl font-bold mb-0.5 tabular-nums text-white">—</p>
-          <p class="text-xs text-neutral-500 mt-1">Avg Daily Views</p>
-        </div>
-        <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-          <p id="stat-likes" class="text-xl font-bold mb-0.5 tabular-nums text-pink-400">—</p>
-          <p class="text-xs text-neutral-500 mt-1">Total Likes</p>
-        </div>
-        <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-          <p id="stat-shares" class="text-xl font-bold mb-0.5 tabular-nums text-sky-400">—</p>
-          <p class="text-xs text-neutral-500 mt-1">Total Shares</p>
-        </div>
-        <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-          <p id="stat-peak-date" class="text-xl font-bold mb-0.5 tabular-nums text-amber-400">—</p>
-          <p id="stat-peak-sub" class="text-xs text-neutral-500 font-mono"></p>
-          <p class="text-xs text-neutral-500 mt-1">Peak Day</p>
+      <!-- Summary cards: single strip like dashboard -->
+      <div class="mb-6" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
+        <div class="grid grid-cols-5">
+          {[
+            { id: "stat-video-views", label: "Video Views",    color: "var(--accent)" },
+            { id: "stat-avg-views",   label: "Avg Daily Views", color: "var(--text-1)" },
+            { id: "stat-likes",       label: "Total Likes",     color: "var(--red)" },
+            { id: "stat-shares",      label: "Total Shares",    color: "var(--blue)" },
+            { id: "stat-peak-date",   label: "Peak Day",        color: "var(--green)" },
+          ].map((s, i) => (
+            <div class="px-5 py-4" style={i < 4 ? "border-right:1px solid var(--border);" : ""}>
+              <p id={s.id} class="font-bold tabular-nums mb-0.5" style={`font-size:20px;color:${s.color};line-height:1.2;`}>—</p>
+              {s.id === "stat-peak-date" && <p id="stat-peak-sub" class="text-xs" style="color:var(--text-3);font-family:'IBM Plex Mono',monospace;min-height:1rem;"></p>}
+              <p class="admin-label mt-1">{s.label}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       <!-- Chart -->
-      <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 mb-8">
-        <div class="flex flex-wrap gap-2 mb-6">
+      <div class="p-5 mb-6" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
+        <!-- Metric toggles -->
+        <div class="flex flex-wrap gap-2 mb-5">
           {[
-            { key: "videoViews",   label: "Video Views",   color: "#818cf8" },
-            { key: "profileViews", label: "Profile Views", color: "#34d399" },
-            { key: "likes",        label: "Likes",         color: "#f472b6" },
-            { key: "comments",     label: "Comments",      color: "#fb923c" },
-            { key: "shares",       label: "Shares",        color: "#60a5fa" },
+            { key: "videoViews",   label: "Video Views",   color: "var(--accent)" },
+            { key: "profileViews", label: "Profile Views", color: "var(--green)" },
+            { key: "likes",        label: "Likes",         color: "var(--red)" },
+            { key: "comments",     label: "Comments",      color: "oklch(70% 0.17 57)" },
+            { key: "shares",       label: "Shares",        color: "var(--blue)" },
           ].map((m, i) => (
             <button
               data-metric={m.key}
               data-color={m.color}
-              class:list={[
-                "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                i === 0
-                  ? "bg-neutral-800 text-white"
-                  : "text-neutral-500 hover:text-neutral-300",
-              ]}
+              class="px-3 py-1.5 text-xs font-medium transition-colors"
+              style={i === 0
+                ? `background:var(--surface-3);color:var(--text-1);border-radius:var(--r-xs);border:1px solid var(--border);cursor:pointer;font-family:inherit;`
+                : `background:transparent;color:var(--text-2);border:1px solid transparent;border-radius:var(--r-xs);cursor:pointer;font-family:inherit;`}
             >
               {m.label}
             </button>
@@ -172,31 +146,22 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
 
         <div class="relative">
           <canvas id="chart" class="w-full block" style="height:260px"></canvas>
-          <div
-            id="chart-tooltip"
-            class="pointer-events-none absolute hidden bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-xs shadow-xl z-10 min-w-[100px]"
-          ></div>
+          <div id="chart-tooltip" class="pointer-events-none absolute hidden text-xs z-10" style="min-width:100px;background:var(--surface-3);border:1px solid var(--border);border-radius:var(--r-sm);padding:0.5rem 0.75rem;box-shadow:0 4px 12px rgba(0,0,0,0.4);"></div>
         </div>
       </div>
 
       <!-- Table -->
-      <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;">
 
-        <!-- Table toolbar -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-800 gap-4">
-          <h2 class="text-sm font-semibold text-white shrink-0">Daily Breakdown</h2>
+        <!-- Toolbar -->
+        <div class="flex items-center justify-between px-5 py-4 gap-4" style="border-bottom:1px solid var(--border);">
+          <h2 class="text-sm font-semibold shrink-0" style="color:var(--text-1);">Daily Breakdown</h2>
           <div class="flex items-center gap-3 flex-wrap justify-end">
-            <button
-              id="delta-toggle"
-              class="px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-300 border border-neutral-800 hover:border-neutral-700 transition-colors"
-            >
+            <button id="delta-toggle" class="px-3 py-1.5 text-xs font-medium transition-colors" style="color:var(--text-2);border:1px solid var(--border);border-radius:var(--r-xs);background:transparent;cursor:pointer;font-family:inherit;">
               Δ Day-over-day
             </button>
-            <span id="table-row-count" class="text-xs text-neutral-500"></span>
-            <button
-              id="export-csv"
-              class="px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-400 hover:text-white border border-neutral-700 hover:border-neutral-500 transition-colors flex items-center gap-1.5"
-            >
+            <span id="table-row-count" class="text-xs" style="color:var(--text-2);"></span>
+            <button id="export-csv" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors" style="color:var(--text-2);border:1px solid var(--border);border-radius:var(--r-xs);background:transparent;cursor:pointer;font-family:inherit;">
               <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 9h8M6 2v5.5M3.5 5L6 7.5 8.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               Export CSV
             </button>
@@ -204,71 +169,53 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
         </div>
 
         <!-- Filter bar -->
-        <div class="flex items-center gap-3 px-6 py-3 border-b border-neutral-800 flex-wrap">
+        <div class="flex items-center gap-3 px-5 py-3 flex-wrap" style="border-bottom:1px solid var(--border);">
           <div class="relative">
-            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-600" width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 8l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            <input
-              id="search-date"
-              type="text"
-              placeholder="Search date…"
-              class="bg-neutral-800 border border-neutral-700 rounded-lg pl-7 pr-3 py-1.5 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500 transition-colors w-36"
-            />
+            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2" width="11" height="11" viewBox="0 0 12 12" fill="none" style="color:var(--text-3);"><circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 8l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <input id="search-date" type="text" placeholder="Search date…" class="forge-field" style="padding-left:1.75rem;width:160px;font-size:12px;" />
           </div>
 
           <div class="flex items-center gap-1.5 ml-auto">
-            <span class="text-xs text-neutral-600">where</span>
-            <select
-              id="filter-metric"
-              class="bg-neutral-800 border border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-neutral-500 transition-colors"
-            >
+            <span class="text-xs" style="color:var(--text-3);">where</span>
+            <select id="filter-metric" class="forge-field" style="width:auto;padding:0.3rem 0.5rem;font-size:12px;">
               <option value="videoViews">Video Views</option>
               <option value="profileViews">Profile Views</option>
               <option value="likes">Likes</option>
               <option value="comments">Comments</option>
               <option value="shares">Shares</option>
             </select>
-            <span class="text-xs text-neutral-600">≥</span>
-            <input
-              id="filter-min"
-              type="number"
-              min="0"
-              placeholder="Min value"
-              class="bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500 transition-colors w-24"
-            />
-            <button
-              id="clear-filters"
-              class="px-2.5 py-1.5 rounded-lg text-xs text-neutral-600 hover:text-neutral-300 transition-colors"
-            >
-              Clear
-            </button>
+            <span class="text-xs" style="color:var(--text-3);">≥</span>
+            <input id="filter-min" type="number" min="0" placeholder="Min value" class="forge-field" style="width:100px;font-size:12px;" />
+            <button id="clear-filters" class="text-xs px-2 py-1.5 transition-colors" style="color:var(--text-3);background:transparent;border:none;cursor:pointer;font-family:inherit;border-radius:var(--r-xs);">Clear</button>
           </div>
         </div>
 
         <!-- Scrollable table -->
         <div class="overflow-x-auto">
-          <div class="max-h-[520px] overflow-y-auto">
-            <table class="w-full text-xs">
-              <thead class="sticky top-0 bg-neutral-900 border-b border-neutral-800 z-10">
+          <div style="max-height:520px;overflow-y:auto;">
+            <table class="w-full" style="font-size:12px;">
+              <thead style="position:sticky;top:0;z-index:10;background:var(--surface-2);border-bottom:1px solid var(--border);">
                 <tr>
-                  <th data-sort="date"         class="px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap cursor-pointer hover:text-neutral-300 select-none transition-colors group">
-                    <span class="flex items-center gap-1">Date <span id="sort-ind-date" class="opacity-40 group-hover:opacity-70">↕</span></span>
-                  </th>
-                  <th data-sort="videoViews"   class="px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap cursor-pointer hover:text-neutral-300 select-none transition-colors group">
-                    <span class="flex items-center gap-1">Video Views <span id="sort-ind-videoViews" class="opacity-40 group-hover:opacity-70">↕</span></span>
-                  </th>
-                  <th data-sort="profileViews" class="px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap cursor-pointer hover:text-neutral-300 select-none transition-colors group">
-                    <span class="flex items-center gap-1">Profile Views <span id="sort-ind-profileViews" class="opacity-40 group-hover:opacity-70">↕</span></span>
-                  </th>
-                  <th data-sort="likes"        class="px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap cursor-pointer hover:text-neutral-300 select-none transition-colors group">
-                    <span class="flex items-center gap-1">Likes <span id="sort-ind-likes" class="opacity-40 group-hover:opacity-70">↕</span></span>
-                  </th>
-                  <th data-sort="comments"     class="px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap cursor-pointer hover:text-neutral-300 select-none transition-colors group">
-                    <span class="flex items-center gap-1">Comments <span id="sort-ind-comments" class="opacity-40 group-hover:opacity-70">↕</span></span>
-                  </th>
-                  <th data-sort="shares"       class="px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap cursor-pointer hover:text-neutral-300 select-none transition-colors group">
-                    <span class="flex items-center gap-1">Shares <span id="sort-ind-shares" class="opacity-40 group-hover:opacity-70">↕</span></span>
-                  </th>
-                  <th id="delta-col-header" class="hidden px-4 py-3 text-left text-neutral-500 font-medium whitespace-nowrap">
+                  {[
+                    { key: "date",         label: "Date" },
+                    { key: "videoViews",   label: "Video Views" },
+                    { key: "profileViews", label: "Profile Views" },
+                    { key: "likes",        label: "Likes" },
+                    { key: "comments",     label: "Comments" },
+                    { key: "shares",       label: "Shares" },
+                  ].map(col => (
+                    <th
+                      data-sort={col.key}
+                      class="px-4 py-3 text-left cursor-pointer select-none group transition-colors"
+                      style="color:var(--text-3);font-size:10.5px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;"
+                    >
+                      <span class="flex items-center gap-1">
+                        {col.label}
+                        <span id={`sort-ind-${col.key}`} style="opacity:0.4;font-size:10px;">↕</span>
+                      </span>
+                    </th>
+                  ))}
+                  <th id="delta-col-header" class="hidden px-4 py-3 text-left admin-label whitespace-nowrap">
                     Δ <span id="delta-col-label">Video Views</span>
                   </th>
                 </tr>
@@ -281,18 +228,15 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
       </div>
     </>
   ) : (
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-12 flex flex-col items-center gap-4 text-center">
-      <div class="w-12 h-12 rounded-2xl bg-neutral-800 flex items-center justify-center text-2xl">↗</div>
-      <div>
-        <h2 class="text-sm font-semibold text-white mb-1">No data yet</h2>
-        <p class="text-xs text-neutral-500">Import a CSV from TikTok Studio to see your analytics here.</p>
+    <div class="flex flex-col items-center gap-4 p-12 text-center" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
+      <div class="flex items-center justify-center" style="width:48px;height:48px;border-radius:var(--r-md);background:var(--surface-3);color:var(--text-3);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <a
-        href="/admin/import/tiktok"
-        class="mt-2 bg-white text-black text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-neutral-100 transition-colors"
-      >
-        Import CSV
-      </a>
+      <div>
+        <h2 class="text-sm font-semibold mb-1" style="color:var(--text-1);">No data yet</h2>
+        <p class="text-xs" style="color:var(--text-2);">Import a CSV from TikTok Studio to see your analytics here.</p>
+      </div>
+      <a href="/admin/import/tiktok" class="forge-btn forge-btn-primary mt-2" style="text-decoration:none;">Import CSV</a>
     </div>
   )}
 
@@ -301,21 +245,19 @@ const maxDate = daily.length ? daily[daily.length - 1]!.date : "";
 
 <script define:vars={{ chartData: daily }}>
 const METRICS = [
-  { key: "videoViews",   label: "Video Views",   color: "#818cf8" },
-  { key: "profileViews", label: "Profile Views", color: "#34d399" },
-  { key: "likes",        label: "Likes",         color: "#f472b6" },
-  { key: "comments",     label: "Comments",      color: "#fb923c" },
-  { key: "shares",       label: "Shares",        color: "#60a5fa" },
+  { key: "videoViews",   label: "Video Views",   color: "var(--accent)" },
+  { key: "profileViews", label: "Profile Views", color: "var(--green)" },
+  { key: "likes",        label: "Likes",         color: "var(--red)" },
+  { key: "comments",     label: "Comments",      color: "oklch(70% 0.17 57)" },
+  { key: "shares",       label: "Shares",        color: "var(--blue)" },
 ];
 
-const allData = chartData; // full date-sorted array
-
-// ── State ─────────────────────────────────────────────────────────────────────
+const allData = chartData;
 let active      = METRICS[0];
 let activeRange = "all";
 let customFrom  = "";
 let customTo    = "";
-let filteredData = [...allData]; // after range filter — used by chart + stats
+let filteredData = [...allData];
 let sortCol     = "date";
 let sortDir     = "desc";
 let showDelta   = false;
@@ -323,7 +265,6 @@ let searchText  = "";
 let filterMetric = "videoViews";
 let filterMin   = "";
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmtNum(n) {
   const abs = Math.abs(n);
   if (abs >= 1e6) return (n / 1e6).toFixed(1) + "M";
@@ -341,7 +282,6 @@ function fmtFullDate(iso) {
   return `${M[m-1]} ${d}, ${y}`;
 }
 
-// ── Range filter ──────────────────────────────────────────────────────────────
 function applyRange() {
   if (!allData.length) return [];
   if (activeRange === "custom") {
@@ -356,26 +296,20 @@ function applyRange() {
   return allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
 }
 
-// ── Build table rows: attach delta, then filter, then sort ────────────────────
 function buildTableRows(data) {
-  // Deltas are computed against date order before any sorting/filtering
   const withDelta = data.map((row, i) => {
     const prev = i > 0 ? data[i - 1][active.key] : null;
     return { ...row, _delta: prev !== null ? row[active.key] - prev : null };
   });
-
   let rows = withDelta;
-
   if (searchText) {
     const q = searchText.toLowerCase();
     rows = rows.filter(r => fmtFullDate(r.date).toLowerCase().includes(q));
   }
-
   if (filterMin !== "" && !isNaN(Number(filterMin))) {
     const min = Number(filterMin);
     rows = rows.filter(r => r[filterMetric] >= min);
   }
-
   rows = [...rows].sort((a, b) => {
     const av = sortCol === "date" ? a.date : a[sortCol];
     const bv = sortCol === "date" ? b.date : b[sortCol];
@@ -383,19 +317,15 @@ function buildTableRows(data) {
     if (av > bv) return sortDir === "asc" ?  1 : -1;
     return 0;
   });
-
   return rows;
 }
 
-// ── Summary cards ─────────────────────────────────────────────────────────────
 function updateStats(data) {
   const totalViews = data.reduce((s, d) => s + d.videoViews, 0);
   const totalLikes = data.reduce((s, d) => s + d.likes, 0);
   const totalShares= data.reduce((s, d) => s + d.shares, 0);
   const avg        = data.length ? Math.round(totalViews / data.length) : 0;
-  const peak       = data.length
-    ? data.reduce((b, d) => d.videoViews > b.videoViews ? d : b, data[0])
-    : null;
+  const peak       = data.length ? data.reduce((b, d) => d.videoViews > b.videoViews ? d : b, data[0]) : null;
 
   document.getElementById("stat-video-views").textContent = fmtNum(totalViews);
   document.getElementById("stat-avg-views").textContent   = fmtNum(avg);
@@ -405,7 +335,6 @@ function updateStats(data) {
   document.getElementById("stat-peak-sub").textContent    = peak ? fmtNum(peak.videoViews) + " views" : "";
 }
 
-// ── Date range label ──────────────────────────────────────────────────────────
 function updateLabel(data) {
   const el = document.getElementById("date-range-label");
   if (!el) return;
@@ -413,7 +342,6 @@ function updateLabel(data) {
   el.textContent = `${data.length} days · ${fmtFullDate(data[0].date)} – ${fmtFullDate(data[data.length - 1].date)}`;
 }
 
-// ── Sort indicators ───────────────────────────────────────────────────────────
 const SORT_COLS = ["date","videoViews","profileViews","likes","comments","shares"];
 function updateSortIndicators() {
   for (const col of SORT_COLS) {
@@ -422,43 +350,38 @@ function updateSortIndicators() {
     if (col === sortCol) {
       el.textContent = sortDir === "asc" ? "↑" : "↓";
       el.style.opacity = "1";
+      el.style.color = "var(--accent)";
     } else {
       el.textContent = "↕";
-      el.style.opacity = "";
+      el.style.opacity = "0.4";
+      el.style.color = "";
     }
   }
 }
 
-// ── Table ─────────────────────────────────────────────────────────────────────
 function updateTable(data) {
-  const rows = buildTableRows(data);
-  const tbody   = document.getElementById("table-body");
+  const rows   = buildTableRows(data);
+  const tbody  = document.getElementById("table-body");
   const countEl = document.getElementById("table-row-count");
   if (!tbody) return;
 
   const filtered = (searchText || filterMin !== "") && rows.length !== data.length;
-  countEl.textContent = filtered
-    ? `${rows.length} of ${data.length} rows`
-    : `${rows.length} rows`;
+  countEl.textContent = filtered ? `${rows.length} of ${data.length} rows` : `${rows.length} rows`;
 
   tbody.innerHTML = rows.map(row => {
     const delta = row._delta;
     const deltaCell = showDelta
-      ? `<td class="px-4 py-2.5 tabular-nums ${
-          delta === null ? "text-neutral-600" :
-          delta > 0      ? "text-emerald-400"  :
-          delta < 0      ? "text-red-400"      : "text-neutral-500"
-        }">
-          ${delta === null ? "—" : (delta > 0 ? "+" : "") + fmtNum(delta)}
-        </td>`
+      ? `<td style="padding:0.5rem 1rem;font-variant-numeric:tabular-nums;color:${
+          delta === null ? "var(--text-3)" : delta > 0 ? "var(--green)" : delta < 0 ? "var(--red)" : "var(--text-2)"
+        };">${delta === null ? "—" : (delta > 0 ? "+" : "") + fmtNum(delta)}</td>`
       : "";
-    return `<tr class="border-b border-neutral-800/50 hover:bg-neutral-800/30 transition-colors">
-      <td class="px-4 py-2.5 text-neutral-300 whitespace-nowrap font-mono">${fmtFullDate(row.date)}</td>
-      <td class="px-4 py-2.5 text-white tabular-nums font-medium">${row.videoViews.toLocaleString()}</td>
-      <td class="px-4 py-2.5 text-neutral-400 tabular-nums">${row.profileViews.toLocaleString()}</td>
-      <td class="px-4 py-2.5 text-pink-400 tabular-nums">${row.likes.toLocaleString()}</td>
-      <td class="px-4 py-2.5 text-neutral-400 tabular-nums">${row.comments.toLocaleString()}</td>
-      <td class="px-4 py-2.5 text-sky-400 tabular-nums">${row.shares.toLocaleString()}</td>
+    return `<tr style="border-bottom:1px solid var(--border);" onmouseenter="this.style.background='var(--surface-3)'" onmouseleave="this.style.background=''">
+      <td style="padding:0.5rem 1rem;color:var(--text-2);white-space:nowrap;font-family:'IBM Plex Mono',monospace;">${fmtFullDate(row.date)}</td>
+      <td style="padding:0.5rem 1rem;color:var(--text-1);font-variant-numeric:tabular-nums;font-weight:500;">${row.videoViews.toLocaleString()}</td>
+      <td style="padding:0.5rem 1rem;color:var(--text-2);font-variant-numeric:tabular-nums;">${row.profileViews.toLocaleString()}</td>
+      <td style="padding:0.5rem 1rem;color:var(--accent);font-variant-numeric:tabular-nums;">${row.likes.toLocaleString()}</td>
+      <td style="padding:0.5rem 1rem;color:var(--text-2);font-variant-numeric:tabular-nums;">${row.comments.toLocaleString()}</td>
+      <td style="padding:0.5rem 1rem;color:var(--blue);font-variant-numeric:tabular-nums;">${row.shares.toLocaleString()}</td>
       ${deltaCell}
     </tr>`;
   }).join("");
@@ -468,6 +391,24 @@ function updateTable(data) {
 const canvas  = document.getElementById("chart");
 const tooltip = document.getElementById("chart-tooltip");
 const ctx     = canvas ? canvas.getContext("2d") : null;
+
+// Resolve CSS variables and build alpha variants for canvas use
+function resolveCssVar(varStr) {
+  const match = varStr.match(/var\((--[^)]+)\)/);
+  if (match) return getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim();
+  return varStr;
+}
+
+function withAlpha(color, alpha) {
+  const c = color.trim();
+  if (c.startsWith('oklch(')) return c.replace(')', ` / ${alpha})`);
+  // hex: append 2-digit alpha
+  if (c.startsWith('#')) {
+    const a = Math.round(alpha * 255).toString(16).padStart(2, '0');
+    return c + a;
+  }
+  return c;
+}
 
 function drawChart() {
   if (!canvas || !ctx) return;
@@ -490,17 +431,19 @@ function drawChart() {
   const minV   = Math.min(0, ...values);
   const range  = maxV - minV || 1;
 
+  const accentColor = resolveCssVar(active.color);
+
   ctx.clearRect(0, 0, cssW, cssH);
-  ctx.font         = "10px system-ui, sans-serif";
+  ctx.font         = "10px 'IBM Plex Mono', monospace";
   ctx.textBaseline = "middle";
 
   for (let i = 0; i <= 5; i++) {
     const y   = padT + cH - (i / 5) * cH;
     const val = minV + (i / 5) * range;
-    ctx.strokeStyle = "rgba(255,255,255,0.06)";
+    ctx.strokeStyle = "rgba(255,255,255,0.05)";
     ctx.lineWidth   = 1;
     ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + cW, y); ctx.stroke();
-    ctx.fillStyle  = "rgba(255,255,255,0.35)";
+    ctx.fillStyle  = "rgba(255,255,255,0.28)";
     ctx.textAlign  = "right";
     ctx.fillText(fmtNum(val), padL - 6, y);
   }
@@ -508,15 +451,15 @@ function drawChart() {
   const labelEvery = Math.max(1, Math.floor(data.length / 7));
   ctx.textAlign    = "center";
   ctx.textBaseline = "top";
-  ctx.fillStyle    = "rgba(255,255,255,0.3)";
+  ctx.fillStyle    = "rgba(255,255,255,0.25)";
   for (let i = 0; i < data.length; i += labelEvery) {
     const x = padL + (i / (data.length - 1 || 1)) * cW;
     ctx.fillText(fmtAxisDate(data[i].date), x, padT + cH + 8);
   }
 
   const grad = ctx.createLinearGradient(0, padT, 0, padT + cH);
-  grad.addColorStop(0, active.color + "55");
-  grad.addColorStop(1, active.color + "00");
+  grad.addColorStop(0, withAlpha(accentColor, 0.26));
+  grad.addColorStop(1, withAlpha(accentColor, 0));
 
   const points = data.map((d, i) => ({
     x: padL + (i / (data.length - 1 || 1)) * cW,
@@ -533,8 +476,8 @@ function drawChart() {
 
   ctx.beginPath();
   points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-  ctx.strokeStyle = active.color;
-  ctx.lineWidth   = 2;
+  ctx.strokeStyle = accentColor;
+  ctx.lineWidth   = 1.5;
   ctx.lineJoin    = "round";
   ctx.stroke();
 }
@@ -555,11 +498,11 @@ if (canvas && tooltip) {
     const left = Math.min(xRel, rect.width - 138);
     const top  = Math.max(0, e.clientY - rect.top - 68);
 
-    tooltip.style.cssText = `display:block;left:${left}px;top:${top}px`;
+    tooltip.style.cssText = `display:block;left:${left}px;top:${top}px;position:absolute;min-width:100px;background:var(--surface-3);border:1px solid var(--border);border-radius:var(--r-sm);padding:0.5rem 0.75rem;box-shadow:0 4px 12px rgba(0,0,0,0.4);pointer-events:none;z-index:10;`;
     tooltip.innerHTML =
-      `<div class="text-neutral-400 mb-0.5">${fmtFullDate(d.date)}</div>` +
-      `<div class="text-white font-semibold">${fmtNum(val)}</div>` +
-      `<div class="text-neutral-500">${active.label}</div>`;
+      `<div style="color:var(--text-2);font-size:11px;margin-bottom:2px;">${fmtFullDate(d.date)}</div>` +
+      `<div style="color:var(--text-1);font-weight:600;font-size:13px;">${fmtNum(val)}</div>` +
+      `<div style="color:var(--text-3);font-size:11px;">${active.label}</div>`;
   });
   canvas.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
 }
@@ -569,33 +512,21 @@ function exportCsv() {
   const rows = buildTableRows(filteredData);
   const headers = ["Date","Video Views","Profile Views","Likes","Comments","Shares"];
   if (showDelta) headers.push(`Δ ${active.label}`);
-
   const lines = [
     headers.join(","),
     ...rows.map(r => {
-      const cells = [
-        r.date,
-        r.videoViews,
-        r.profileViews,
-        r.likes,
-        r.comments,
-        r.shares,
-      ];
+      const cells = [r.date, r.videoViews, r.profileViews, r.likes, r.comments, r.shares];
       if (showDelta) cells.push(r._delta ?? "");
       return cells.join(",");
     }),
   ];
-
   const blob = new Blob([lines.join("\n")], { type: "text/csv" });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement("a");
-  a.href     = url;
-  a.download = `tiktok-analytics-${activeRange}.csv`;
-  a.click();
+  a.href = url; a.download = `tiktok-analytics-${activeRange}.csv`; a.click();
   URL.revokeObjectURL(url);
 }
 
-// ── Full render ───────────────────────────────────────────────────────────────
 function render() {
   filteredData = applyRange();
   updateStats(filteredData);
@@ -609,67 +540,58 @@ function render() {
 document.querySelectorAll("[data-range]").forEach(btn => {
   btn.addEventListener("click", () => {
     activeRange = btn.dataset.range;
-
     document.querySelectorAll("[data-range]").forEach(b => {
-      b.classList.remove("bg-neutral-800", "text-white");
-      b.classList.add("text-neutral-500", "hover:text-neutral-300");
+      b.style.background = "transparent";
+      b.style.color = "var(--text-2)";
     });
-    btn.classList.add("bg-neutral-800", "text-white");
-    btn.classList.remove("text-neutral-500", "hover:text-neutral-300");
+    btn.style.background = "var(--surface-3)";
+    btn.style.color = "var(--text-1)";
 
     const customEl = document.getElementById("custom-range");
     if (customEl) {
       customEl.classList.toggle("hidden", activeRange !== "custom");
       customEl.classList.toggle("flex",   activeRange === "custom");
     }
-
     render();
   });
 });
 
-// ── Custom date inputs ────────────────────────────────────────────────────────
-const fromInput = document.getElementById("custom-from");
-const toInput   = document.getElementById("custom-to");
-
-fromInput?.addEventListener("change", () => {
-  customFrom = fromInput.value;
+document.getElementById("custom-from")?.addEventListener("change", (e) => {
+  customFrom = e.target.value;
   if (activeRange === "custom") render();
 });
-toInput?.addEventListener("change", () => {
-  customTo = toInput.value;
+document.getElementById("custom-to")?.addEventListener("change", (e) => {
+  customTo = e.target.value;
   if (activeRange === "custom") render();
 });
 
-// ── Sort column headers ───────────────────────────────────────────────────────
+// ── Sort ──────────────────────────────────────────────────────────────────────
 document.querySelectorAll("th[data-sort]").forEach(th => {
   th.addEventListener("click", () => {
     const col = th.dataset.sort;
-    if (sortCol === col) {
-      sortDir = sortDir === "asc" ? "desc" : "asc";
-    } else {
-      sortCol = col;
-      sortDir = col === "date" ? "desc" : "desc";
-    }
+    if (sortCol === col) { sortDir = sortDir === "asc" ? "desc" : "asc"; }
+    else { sortCol = col; sortDir = "desc"; }
     updateSortIndicators();
     updateTable(filteredData);
   });
+  th.addEventListener("mouseenter", () => { th.style.color = "var(--text-1)"; });
+  th.addEventListener("mouseleave", () => { th.style.color = "var(--text-3)"; });
 });
 
-// ── Metric buttons ────────────────────────────────────────────────────────────
+// ── Metric buttons ─────────────────────────────────────────────────────────────
 document.querySelectorAll("[data-metric]").forEach(btn => {
   btn.addEventListener("click", () => {
     active = METRICS.find(m => m.key === btn.dataset.metric) || METRICS[0];
     document.querySelectorAll("[data-metric]").forEach(b => {
-      b.classList.remove("bg-neutral-800", "text-white");
-      b.classList.add("text-neutral-500");
+      b.style.background = "transparent";
+      b.style.color = "var(--text-2)";
+      b.style.borderColor = "transparent";
     });
-    btn.classList.add("bg-neutral-800", "text-white");
-    btn.classList.remove("text-neutral-500");
-
-    // Update delta column label if visible
+    btn.style.background = "var(--surface-3)";
+    btn.style.color = "var(--text-1)";
+    btn.style.borderColor = "var(--border)";
     const lbl = document.getElementById("delta-col-label");
     if (lbl) lbl.textContent = active.label;
-
     updateTable(filteredData);
     drawChart();
   });
@@ -679,27 +601,18 @@ document.querySelectorAll("[data-metric]").forEach(btn => {
 document.getElementById("delta-toggle")?.addEventListener("click", (e) => {
   showDelta = !showDelta;
   const btn = e.currentTarget;
-  btn.classList.toggle("text-white",       showDelta);
-  btn.classList.toggle("border-neutral-600", showDelta);
-  btn.classList.toggle("text-neutral-500",  !showDelta);
-  btn.classList.toggle("border-neutral-800",!showDelta);
-
-  const header = document.getElementById("delta-col-header");
-  header?.classList.toggle("hidden", !showDelta);
-
+  btn.style.color       = showDelta ? "var(--text-1)" : "var(--text-2)";
+  btn.style.borderColor = showDelta ? "var(--accent)"  : "var(--border)";
+  document.getElementById("delta-col-header")?.classList.toggle("hidden", !showDelta);
   updateTable(filteredData);
 });
 
-// ── Export ────────────────────────────────────────────────────────────────────
 document.getElementById("export-csv")?.addEventListener("click", exportCsv);
 
-// ── Search ────────────────────────────────────────────────────────────────────
 document.getElementById("search-date")?.addEventListener("input", (e) => {
   searchText = e.target.value.trim();
   updateTable(filteredData);
 });
-
-// ── Min-value filter ──────────────────────────────────────────────────────────
 document.getElementById("filter-metric")?.addEventListener("change", (e) => {
   filterMetric = e.target.value;
   updateTable(filteredData);
@@ -708,22 +621,15 @@ document.getElementById("filter-min")?.addEventListener("input", (e) => {
   filterMin = e.target.value;
   updateTable(filteredData);
 });
-
-// ── Clear filters ─────────────────────────────────────────────────────────────
 document.getElementById("clear-filters")?.addEventListener("click", () => {
-  searchText  = "";
-  filterMin   = "";
-  filterMetric = "videoViews";
-  const searchEl  = document.getElementById("search-date");
-  const minEl     = document.getElementById("filter-min");
-  const metricSel = document.getElementById("filter-metric");
-  if (searchEl)  searchEl.value  = "";
-  if (minEl)     minEl.value     = "";
-  if (metricSel) metricSel.value = "videoViews";
+  searchText = ""; filterMin = ""; filterMetric = "videoViews";
+  const s = document.getElementById("search-date");
+  const m = document.getElementById("filter-min");
+  const f = document.getElementById("filter-metric");
+  if (s) s.value = ""; if (m) m.value = ""; if (f) f.value = "videoViews";
   updateTable(filteredData);
 });
 
-// ── Init ──────────────────────────────────────────────────────────────────────
 window.addEventListener("load",   render);
 window.addEventListener("resize", drawChart);
 </script>

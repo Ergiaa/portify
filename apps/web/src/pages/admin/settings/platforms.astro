@@ -17,31 +17,31 @@ const connectedPlatforms = await db.select({
 const connectedMap = Object.fromEntries(connectedPlatforms.map((p) => [p.name, p]));
 
 const supported = [
-  { name: "tiktok", label: "TikTok", icon: "♪" },
-  { name: "instagram", label: "Instagram", icon: "◎" },
+  { name: "tiktok", label: "TikTok" },
+  { name: "instagram", label: "Instagram" },
 ] as const;
 
 const connected = Astro.url.searchParams.get("connected");
 ---
 
 <AdminLayout title="Platforms">
-<div class="px-8 py-10">
+<div class="px-8 py-10" style="max-width:760px;">
 
   <!-- Header -->
-  <div class="mb-8">
-    <h1 class="text-2xl font-bold text-white mb-1">Platform Connections</h1>
-    <p class="text-neutral-500 text-sm">Connect your social accounts to sync content statistics automatically.</p>
+  <div class="mb-7">
+    <h1 class="font-bold" style="font-size:21px;color:var(--text-1);">Platforms</h1>
+    <p class="text-sm mt-1" style="color:var(--text-2);">Connect your social accounts to sync content statistics automatically.</p>
   </div>
 
   <!-- Success banner -->
   {connected && (
-    <div class="mb-6 px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-sm text-emerald-400">
+    <div class="mb-5 px-4 py-3 text-sm" style="background:var(--green-muted);border:1px solid oklch(70% 0.17 145 / 0.2);border-radius:var(--r-sm);color:var(--green);">
       Platform connected successfully.
     </div>
   )}
 
   {Astro.url.searchParams.get("error") && (
-    <div class="mb-6 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">
+    <div class="mb-5 px-4 py-3 text-sm" style="background:var(--red-muted);border:1px solid oklch(65% 0.2 25 / 0.2);border-radius:var(--r-sm);color:var(--red);">
       {{
         access_denied: "You denied access to the platform.",
         invalid_state: "Security check failed. Please try again.",
@@ -52,56 +52,66 @@ const connected = Astro.url.searchParams.get("connected");
     </div>
   )}
 
-  <!-- Error / info msg -->
-  <div id="status-msg" class="hidden mb-6 px-4 py-3 rounded-xl text-sm border"></div>
+  <div id="status-msg" class="hidden mb-5 px-4 py-3 text-sm" style="border-radius:var(--r-sm);"></div>
 
   <!-- Platform cards -->
-  <div class="flex flex-col gap-4">
-    {supported.map(({ name, label, icon }) => {
+  <div class="flex flex-col gap-3">
+    {supported.map(({ name, label }) => {
       const platform = connectedMap[name];
       const isConnected = !!platform;
       const hasError = platform?.lastSyncStatus === "error";
       const isSyncing = platform?.lastSyncStatus === "in_progress";
 
       return (
-        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6" data-platform={name}>
+        <div class="p-5" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);" data-platform={name}>
           <div class="flex items-start justify-between gap-4">
-            <!-- Left: info -->
+            <!-- Left -->
             <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center text-lg">
-                {icon}
+              <!-- Icon placeholder -->
+              <div class="flex items-center justify-center" style="width:44px;height:44px;border-radius:var(--r-md);background:var(--surface-3);border:1px solid var(--border);flex-shrink:0;">
+                {name === "tiktok" ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:var(--text-2);">
+                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.95a8.16 8.16 0 004.77 1.52V7.02a4.85 4.85 0 01-1-.33z"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-2);">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                  </svg>
+                )}
               </div>
+
               <div>
                 <div class="flex items-center gap-2.5 mb-0.5">
-                  <span class="text-white font-semibold text-sm">{label}</span>
+                  <span class="text-sm font-semibold" style="color:var(--text-1);">{label}</span>
                   {isConnected ? (
-                    <span class:list={["inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border", hasError
-                      ? "bg-red-500/10 text-red-400 border-red-500/20"
-                      : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                    ]}>
-                      <span class:list={["w-1.5 h-1.5 rounded-full", hasError ? "bg-red-400" : "bg-emerald-400"]}></span>
+                    <span
+                      class="forge-badge"
+                      style={hasError
+                        ? "background:var(--red-muted);color:var(--red);"
+                        : "background:var(--green-muted);color:var(--green);"}
+                    >
+                      <span class="forge-badge-dot" style={hasError ? "background:var(--red);" : "background:var(--green);"}></span>
                       {hasError ? "Error" : "Connected"}
                     </span>
                   ) : (
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border bg-neutral-800 text-neutral-500 border-neutral-700">
-                      <span class="w-1.5 h-1.5 rounded-full bg-neutral-600"></span>
+                    <span class="forge-badge" style="background:var(--surface-3);color:var(--text-3);">
+                      <span class="forge-badge-dot" style="background:var(--text-3);"></span>
                       Not connected
                     </span>
                   )}
                 </div>
-                {isConnected && platform.accountName && (
-                  <p class="text-xs text-neutral-500">
+                {isConnected && platform.accountName ? (
+                  <p class="text-xs" style="color:var(--text-2);">
                     @{platform.accountName}
                     {platform.lastSyncedAt && (
                       <> &bull; Last synced {platform.lastSyncedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</>
                     )}
                   </p>
-                )}
-                {!isConnected && (
-                  <p class="text-xs text-neutral-600">No account linked</p>
-                )}
+                ) : !isConnected ? (
+                  <p class="text-xs" style="color:var(--text-3);">No account linked</p>
+                ) : null}
                 {hasError && platform.lastSyncError && (
-                  <p class="mt-1 text-xs text-red-400/80">{platform.lastSyncError}</p>
+                  <p class="mt-1 text-xs" style="color:var(--red);">{platform.lastSyncError}</p>
                 )}
               </div>
             </div>
@@ -113,13 +123,15 @@ const connected = Astro.url.searchParams.get("connected");
                   <button
                     data-sync-btn={name}
                     disabled={isSyncing}
-                    class="px-3 py-1.5 text-xs font-medium text-neutral-300 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-neutral-600 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="forge-btn forge-btn-secondary"
+                    style="font-size:12px;padding:0.3rem 0.75rem;"
                   >
                     {isSyncing ? "Syncing…" : "Sync now"}
                   </button>
                   <button
                     data-disconnect-btn={name}
-                    class="px-3 py-1.5 text-xs font-medium text-red-400/70 hover:text-red-400 bg-transparent hover:bg-red-500/10 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all"
+                    class="forge-btn forge-btn-danger"
+                    style="font-size:12px;padding:0.3rem 0.75rem;"
                   >
                     Disconnect
                   </button>
@@ -127,7 +139,8 @@ const connected = Astro.url.searchParams.get("connected");
               ) : (
                 <button
                   data-connect-btn={name}
-                  class="px-3 py-1.5 text-xs font-semibold text-black bg-white hover:bg-neutral-100 rounded-lg transition-colors"
+                  class="forge-btn forge-btn-primary"
+                  style="font-size:12px;padding:0.3rem 0.75rem;"
                 >
                   Connect
                 </button>
@@ -139,8 +152,7 @@ const connected = Astro.url.searchParams.get("connected");
     })}
   </div>
 
-  <!-- Info note -->
-  <p class="mt-6 text-xs text-neutral-700">
+  <p class="mt-5 text-xs" style="color:var(--text-3);">
     Statistics are synced every 6 hours. Connected accounts must be Professional (Instagram) or linked to an approved developer app (TikTok).
   </p>
 
@@ -154,16 +166,16 @@ const connected = Astro.url.searchParams.get("connected");
   function showMsg(text: string, type: "success" | "error") {
     const el = document.getElementById("status-msg")!;
     el.textContent = text;
-    el.className = `mb-6 px-4 py-3 rounded-xl text-sm border ${
-      type === "success"
-        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-        : "bg-red-500/10 border-red-500/20 text-red-400"
-    }`;
+    if (type === "success") {
+      el.style.cssText = "background:var(--green-muted);border:1px solid oklch(70% 0.17 145 / 0.2);border-radius:var(--r-sm);color:var(--green);";
+    } else {
+      el.style.cssText = "background:var(--red-muted);border:1px solid oklch(65% 0.2 25 / 0.2);border-radius:var(--r-sm);color:var(--red);";
+    }
     el.classList.remove("hidden");
+    el.classList.add("mb-5", "px-4", "py-3", "text-sm");
     setTimeout(() => el.classList.add("hidden"), 4000);
   }
 
-  // Connect
   document.querySelectorAll("[data-connect-btn]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const name = (btn as HTMLElement).dataset.connectBtn!;
@@ -184,7 +196,6 @@ const connected = Astro.url.searchParams.get("connected");
     });
   });
 
-  // Sync now
   document.querySelectorAll("[data-sync-btn]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const name = (btn as HTMLElement).dataset.syncBtn! as "tiktok" | "instagram" | "youtube";
@@ -202,7 +213,6 @@ const connected = Astro.url.searchParams.get("connected");
     });
   });
 
-  // Disconnect
   document.querySelectorAll("[data-disconnect-btn]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const name = (btn as HTMLElement).dataset.disconnectBtn! as "tiktok" | "instagram" | "youtube";

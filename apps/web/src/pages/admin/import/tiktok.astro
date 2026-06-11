@@ -1,21 +1,20 @@
 ---
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 
-// Use the server's clock (always correct) to build the year options.
 const serverYear = new Date().getFullYear();
-const yearOptions = Array.from({ length: 10 }, (_, i) => serverYear - i); // e.g. 2026 → 2017
+const yearOptions = Array.from({ length: 10 }, (_, i) => serverYear - i);
 ---
 
 <AdminLayout title="Import TikTok data">
-<div class="px-8 py-10 max-w-3xl">
+<div class="px-8 py-10 max-w-2xl">
 
-  <div class="mb-8">
-    <a href="/admin" class="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors mb-5">
+  <div class="mb-7">
+    <a href="/admin" class="inline-flex items-center gap-1.5 text-xs mb-5 transition-colors" style="color:var(--text-3);">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M7.5 9L4.5 6L7.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Dashboard
     </a>
-    <h1 class="text-2xl font-bold text-white">Import TikTok data</h1>
-    <p class="text-neutral-500 text-sm mt-1">
+    <h1 class="font-bold" style="font-size:21px;color:var(--text-1);">Import TikTok data</h1>
+    <p class="text-sm mt-1" style="color:var(--text-2);">
       Export from TikTok Studio → Analytics → Overview, then drop the CSV here.
     </p>
   </div>
@@ -24,64 +23,76 @@ const yearOptions = Array.from({ length: 10 }, (_, i) => serverYear - i); // e.g
   <div id="step-upload">
     <div
       id="drop-zone"
-      class="relative w-full rounded-2xl border-2 border-dashed border-neutral-700 hover:border-neutral-500 transition-all cursor-pointer bg-neutral-950 flex flex-col items-center justify-center py-16 gap-4"
+      class="relative w-full flex flex-col items-center justify-center gap-4 cursor-pointer transition-all"
+      style="border:1.5px dashed var(--border);border-radius:var(--r-md);background:var(--surface-1);padding:4rem 2rem;"
     >
-      <div class="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="text-neutral-500">
+      <div class="flex items-center justify-center" style="width:44px;height:44px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="color:var(--text-3);">
           <path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div class="text-center">
-        <p class="text-sm font-medium text-neutral-300">Drop your CSV here</p>
-        <p class="text-xs text-neutral-600 mt-1">or click to browse</p>
+        <p class="text-sm font-medium" style="color:var(--text-1);">Drop your CSV here</p>
+        <p class="text-xs mt-1" style="color:var(--text-3);">or click to browse</p>
       </div>
-      <p class="text-xs text-neutral-700">Any date range · Any length</p>
+      <p class="text-xs" style="color:var(--text-3);">Any date range · Any length</p>
     </div>
     <input id="csv-input" type="file" accept=".csv,text/csv" class="hidden" />
+
+    <!-- Info banner -->
+    <div class="mt-4 px-4 py-3 flex items-start gap-2.5" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" class="mt-0.5 shrink-0" style="color:var(--text-3);">
+        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3a.75.75 0 1 1 0 1.5A.75.75 0 0 1 8 4zm.75 7.25h-1.5v-4.5h1.5v4.5z"/>
+      </svg>
+      <p class="text-xs" style="color:var(--text-2);">
+        Go to <strong style="color:var(--text-1);">TikTok Studio → Analytics → Overview</strong>, set your date range, then click Export.
+      </p>
+    </div>
   </div>
 
   <!-- ── Step 2: Preview ── -->
   <div id="step-preview" class="hidden space-y-4">
 
     <!-- File chip -->
-    <div class="flex items-center gap-3 bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-neutral-500 shrink-0">
+    <div class="flex items-center gap-3 px-4 py-3" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" class="shrink-0" style="color:var(--text-3);">
         <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="flex-1 min-w-0">
-        <p id="file-name" class="text-sm text-white truncate font-medium"></p>
-        <p id="file-size" class="text-xs text-neutral-500"></p>
+        <p id="file-name" class="text-sm font-medium truncate" style="color:var(--text-1);"></p>
+        <p id="file-size" class="text-xs" style="color:var(--text-2);"></p>
       </div>
-      <button id="clear-btn" class="text-neutral-600 hover:text-white transition-colors p-1 rounded-lg hover:bg-neutral-800">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <button id="clear-btn" class="p-1.5 transition-colors" style="background:transparent;border:none;cursor:pointer;color:var(--text-3);border-radius:var(--r-xs);">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
     </div>
 
-    <!-- Parse summary -->
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-6">
+    <!-- Parse summary card -->
+    <div class="space-y-5 p-5" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
 
       <!-- Headline stats -->
       <div class="flex items-end gap-8">
         <div>
-          <p id="row-count" class="text-4xl font-bold text-white tabular-nums"></p>
-          <p class="text-xs text-neutral-500 mt-1">days detected</p>
+          <p id="row-count" class="font-bold tabular-nums" style="font-size:34px;color:var(--text-1);line-height:1;"></p>
+          <p class="text-xs mt-1 admin-label">Days detected</p>
         </div>
         <div class="pb-1">
-          <p id="date-range" class="text-sm font-medium text-neutral-300 font-mono"></p>
-          <p class="text-xs text-neutral-600 mt-0.5">date range</p>
+          <p id="date-range" class="text-sm font-medium" style="color:var(--text-1);font-family:'IBM Plex Mono',monospace;"></p>
+          <p class="text-xs mt-0.5 admin-label">Date range</p>
         </div>
       </div>
 
-      <!-- Year picker (only shown when dates have no year) -->
-      <div id="year-picker-row" class="hidden flex items-center gap-3 p-3 bg-amber-500/5 border border-amber-500/15 rounded-xl">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="text-amber-400 shrink-0">
+      <!-- Year picker -->
+      <div id="year-picker-row" class="hidden flex items-center gap-3 px-3 py-2.5" style="background:var(--accent-muted);border-radius:var(--r-sm);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="shrink-0" style="color:var(--accent);">
           <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <p class="text-xs text-amber-300 flex-1">Dates have no year — starting from:</p>
+        <p class="text-xs flex-1" style="color:var(--accent);">Dates have no year — starting from:</p>
         <select
           id="start-year"
-          class="bg-neutral-800 border border-neutral-700 text-white text-xs font-mono rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+          class="forge-field"
+          style="width:auto;padding:0.25rem 0.5rem;font-family:'IBM Plex Mono',monospace;font-size:12px;"
         >
           {yearOptions.map(y => (
             <option value={y} selected={y === serverYear}>{y}</option>
@@ -91,99 +102,98 @@ const yearOptions = Array.from({ length: 10 }, (_, i) => serverYear - i); // e.g
 
       <!-- Column badges -->
       <div>
-        <p class="text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-2.5">Columns</p>
+        <p class="admin-label mb-2.5">Detected columns</p>
         <div id="column-badges" class="flex flex-wrap gap-2"></div>
       </div>
 
       <!-- Preview table -->
       <div>
-        <p class="text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-2.5">Preview</p>
-        <div class="overflow-x-auto rounded-xl border border-neutral-800">
-          <table class="w-full text-xs">
+        <p class="admin-label mb-2.5">Preview</p>
+        <div class="overflow-x-auto" style="border:1px solid var(--border);border-radius:var(--r-sm);">
+          <table class="w-full" style="font-size:12px;">
             <thead>
-              <tr class="border-b border-neutral-800">
-                <th class="px-3 py-2.5 text-left text-neutral-500 font-medium whitespace-nowrap">Date</th>
-                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Video Views</th>
-                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Profile Views</th>
-                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Likes</th>
-                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Comments</th>
-                <th class="px-3 py-2.5 text-right text-neutral-500 font-medium whitespace-nowrap">Shares</th>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th class="px-3 py-2.5 text-left admin-label">Date</th>
+                <th class="px-3 py-2.5 text-right admin-label">Video Views</th>
+                <th class="px-3 py-2.5 text-right admin-label">Profile Views</th>
+                <th class="px-3 py-2.5 text-right admin-label">Likes</th>
+                <th class="px-3 py-2.5 text-right admin-label">Comments</th>
+                <th class="px-3 py-2.5 text-right admin-label">Shares</th>
               </tr>
             </thead>
             <tbody id="preview-tbody"></tbody>
           </table>
         </div>
-        <p id="more-rows" class="text-xs text-neutral-600 mt-2 text-right"></p>
+        <p id="more-rows" class="hidden text-xs mt-1.5 text-right" style="color:var(--text-3);"></p>
       </div>
 
       <!-- Warnings -->
-      <div id="warnings" class="hidden p-4 bg-amber-500/5 border border-amber-500/15 rounded-xl space-y-1">
-        <p class="text-xs font-semibold text-amber-400">Warnings</p>
-        <ul id="warnings-list" class="text-xs text-neutral-400 space-y-0.5 list-disc list-inside"></ul>
+      <div id="warnings" class="hidden p-4 space-y-1" style="background:oklch(71% 0.17 57 / 0.06);border:1px solid oklch(71% 0.17 57 / 0.15);border-radius:var(--r-sm);">
+        <p class="text-xs font-semibold" style="color:var(--accent);">Warnings</p>
+        <ul id="warnings-list" class="text-xs space-y-0.5 list-disc list-inside" style="color:var(--text-2);"></ul>
       </div>
 
       <!-- Unknown columns -->
-      <div id="unknown-cols" class="hidden p-4 bg-neutral-950 rounded-xl">
-        <p class="text-xs text-neutral-500">
-          <span class="font-semibold text-neutral-400">Ignored columns:</span>
-          <span id="unknown-list" class="font-mono ml-1"></span>
+      <div id="unknown-cols" class="hidden px-4 py-3" style="background:var(--surface-3);border-radius:var(--r-sm);">
+        <p class="text-xs" style="color:var(--text-2);">
+          <span class="font-semibold" style="color:var(--text-1);">Ignored columns:</span>
+          <span id="unknown-list" style="font-family:'IBM Plex Mono',monospace;" class="ml-1"></span>
         </p>
       </div>
     </div>
 
-    <!-- Error -->
-    <div id="parse-error" class="hidden px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400"></div>
+    <!-- Parse error -->
+    <div id="parse-error" class="hidden px-4 py-3 text-sm" style="background:var(--red-muted);border:1px solid oklch(65% 0.2 25 / 0.2);border-radius:var(--r-sm);color:var(--red);"></div>
 
-    <!-- CTA -->
-    <button
-      id="import-btn"
-      class="w-full bg-white text-black text-sm font-semibold px-5 py-3 rounded-xl hover:bg-neutral-100 transition-colors"
-    >
+    <!-- Import CTA -->
+    <button id="import-btn" class="forge-btn forge-btn-primary w-full" style="padding:0.65rem 1rem;font-size:13px;text-align:center;">
       Import <span id="import-count"></span> days
     </button>
+    <p class="text-xs text-center" style="color:var(--text-3);">Duplicate dates will be skipped automatically.</p>
   </div>
 
   <!-- ── Step 3: Importing ── -->
   <div id="step-importing" class="hidden">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-12 flex flex-col items-center gap-4">
-      <div class="w-8 h-8 border-2 border-neutral-700 border-t-white rounded-full animate-spin"></div>
-      <p class="text-sm text-neutral-400">Importing…</p>
+    <div class="flex flex-col items-center gap-4 p-12" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
+      <div class="w-7 h-7 rounded-full animate-spin" style="border:2px solid var(--border);border-top-color:var(--accent);"></div>
+      <p class="text-sm" style="color:var(--text-2);">Importing…</p>
     </div>
   </div>
 
   <!-- ── Step 4: Done ── -->
   <div id="step-done" class="hidden space-y-4">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-5">
+    <div class="p-6 space-y-5" style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);">
       <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-400 text-sm">✓</div>
-        <h2 class="text-sm font-semibold text-white">Import complete</h2>
+        <div class="flex items-center justify-center text-sm" style="width:32px;height:32px;border-radius:50%;background:var(--green-muted);border:1px solid oklch(70% 0.17 145 / 0.25);color:var(--green);">✓</div>
+        <h2 class="text-sm font-semibold" style="color:var(--text-1);">Import complete</h2>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
-        <div class="bg-neutral-950 rounded-xl p-4">
-          <p id="result-inserted" class="text-2xl font-bold text-emerald-400 tabular-nums">—</p>
-          <p class="text-xs text-neutral-500 mt-0.5">Days inserted</p>
+        <div class="px-4 py-4" style="background:var(--surface-3);border-radius:var(--r-sm);">
+          <p id="result-inserted" class="font-bold tabular-nums" style="font-size:28px;color:var(--green);line-height:1;">—</p>
+          <p class="text-xs mt-1" style="color:var(--text-2);">Days inserted</p>
         </div>
-        <div class="bg-neutral-950 rounded-xl p-4">
-          <p id="result-skipped" class="text-2xl font-bold text-neutral-500 tabular-nums">—</p>
-          <p class="text-xs text-neutral-500 mt-0.5">Already existed</p>
+        <div class="px-4 py-4" style="background:var(--surface-3);border-radius:var(--r-sm);">
+          <p id="result-skipped" class="font-bold tabular-nums" style="font-size:28px;color:var(--text-3);line-height:1;">—</p>
+          <p class="text-xs mt-1" style="color:var(--text-2);">Already existed</p>
         </div>
       </div>
 
-      <p id="result-range" class="text-xs text-neutral-600 font-mono"></p>
+      <p id="result-range" class="text-xs" style="color:var(--text-3);font-family:'IBM Plex Mono',monospace;"></p>
 
-      <div id="result-unknown" class="hidden text-xs text-neutral-500">
-        <span class="font-semibold text-neutral-400">Ignored columns:</span>
-        <span id="result-unknown-list" class="font-mono ml-1"></span>
+      <div id="result-unknown" class="hidden text-xs" style="color:var(--text-2);">
+        <span class="font-semibold" style="color:var(--text-1);">Ignored columns:</span>
+        <span id="result-unknown-list" style="font-family:'IBM Plex Mono',monospace;" class="ml-1"></span>
       </div>
 
-      <div class="flex items-center justify-between pt-1">
-        <button id="import-another-btn" class="text-sm text-neutral-500 hover:text-white transition-colors">
+      <div class="flex items-center justify-between pt-1" style="border-top:1px solid var(--border);">
+        <button id="import-another-btn" class="forge-btn forge-btn-ghost" style="padding:0.4rem 0;">
           ← Import another file
         </button>
         <a
           href="/admin/analytics/tiktok"
-          class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+          class="forge-btn forge-btn-primary"
+          style="text-decoration:none;"
         >
           View analytics →
         </a>
@@ -197,7 +207,6 @@ const yearOptions = Array.from({ length: 10 }, (_, i) => serverYear - i); // e.g
 <script>
 import { parseTikTokCsv, type TikTokDailyRow, type CsvParseOptions } from "@portify/api/lib/tiktok-csv";
 
-// ── Elements ──────────────────────────────────────────────────────────────────
 const stepUpload    = document.getElementById("step-upload")!;
 const stepPreview   = document.getElementById("step-preview")!;
 const stepImporting = document.getElementById("step-importing")!;
@@ -209,7 +218,6 @@ const clearBtn      = document.getElementById("clear-btn")!;
 const importBtn     = document.getElementById("import-btn")!;
 const importAnotherBtn = document.getElementById("import-another-btn")!;
 
-// ── State ─────────────────────────────────────────────────────────────────────
 function showStep(step: "upload" | "preview" | "importing" | "done") {
   stepUpload.classList.toggle("hidden",    step !== "upload");
   stepPreview.classList.toggle("hidden",   step !== "preview");
@@ -217,17 +225,13 @@ function showStep(step: "upload" | "preview" | "importing" | "done") {
   stepDone.classList.toggle("hidden",      step !== "done");
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmtDate(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   return `${months[m! - 1]} ${d}, ${y}`;
 }
 
-function fmtNum(n: number) {
-  return n.toLocaleString();
-}
-
+function fmtNum(n: number) { return n.toLocaleString(); }
 function fmtFileSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -245,21 +249,22 @@ const ALL_METRICS: { key: keyof Omit<TikTokDailyRow, "date">; label: string }[] 
 
 // ── Drop zone ─────────────────────────────────────────────────────────────────
 dropZone.addEventListener("click", () => csvInput.click());
-
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault();
-  dropZone.classList.add("border-indigo-500", "bg-indigo-950/20");
+  dropZone.style.borderColor = "var(--accent)";
+  dropZone.style.background = "var(--accent-muted)";
 });
 dropZone.addEventListener("dragleave", () => {
-  dropZone.classList.remove("border-indigo-500", "bg-indigo-950/20");
+  dropZone.style.borderColor = "var(--border)";
+  dropZone.style.background = "var(--surface-1)";
 });
 dropZone.addEventListener("drop", (e) => {
   e.preventDefault();
-  dropZone.classList.remove("border-indigo-500", "bg-indigo-950/20");
+  dropZone.style.borderColor = "var(--border)";
+  dropZone.style.background = "var(--surface-1)";
   const f = e.dataTransfer?.files[0];
   if (f) loadFile(f);
 });
-
 csvInput.addEventListener("change", () => {
   const f = csvInput.files?.[0];
   if (f) loadFile(f);
@@ -273,7 +278,6 @@ function resetToUpload() {
   startYearSel.selectedIndex = 0;
   showStep("upload");
 }
-
 clearBtn.addEventListener("click",        resetToUpload);
 importAnotherBtn.addEventListener("click", resetToUpload);
 
@@ -286,10 +290,9 @@ startYearSel.addEventListener("change", () => {
   if (currentFileText && currentFile) renderPreview(currentFile, currentFileText);
 });
 
-// ── Parse & preview ───────────────────────────────────────────────────────────
 let currentFile: File | null = null;
 let currentFileText: string | null = null;
-let yearPickerTouched = false; // true only after user manually changes the picker
+let yearPickerTouched = false;
 
 function loadFile(file: File) {
   yearPickerTouched = false;
@@ -303,18 +306,12 @@ function loadFile(file: File) {
 }
 
 function renderPreview(file: File, text: string) {
-  // Only pass an explicit startYear when the user has manually chosen one.
-  // Otherwise let the parser auto-detect so the picker shows the right default.
-  const opts: CsvParseOptions = yearPickerTouched
-    ? { startYear: Number(startYearSel.value) }
-    : {};
+  const opts: CsvParseOptions = yearPickerTouched ? { startYear: Number(startYearSel.value) } : {};
   const result = parseTikTokCsv(text, opts);
   const { rows, detectedMetrics, unknownColumns, errors, yearInferred, detectedStartYear } = result;
 
-  // Show/hide picker; sync its value to the auto-detected year on first load
   yearPickerRow.classList.toggle("hidden", !yearInferred);
   if (yearInferred && detectedStartYear !== null && !yearPickerTouched) {
-    // Ensure the detected year exists as an option (server may not have included it)
     if (!Array.from(startYearSel.options).some(o => o.value === String(detectedStartYear))) {
       const opt = document.createElement("option");
       opt.value = String(detectedStartYear);
@@ -324,24 +321,21 @@ function renderPreview(file: File, text: string) {
     startYearSel.value = String(detectedStartYear);
   }
 
-  // File chip
   (document.getElementById("file-name")!).textContent = file.name;
   (document.getElementById("file-size")!).textContent = fmtFileSize(file.size);
 
-  // Parse error — nothing usable
   const parseErrorEl = document.getElementById("parse-error")!;
   if (rows.length === 0) {
     parseErrorEl.textContent = errors[0] ?? "Could not parse this file. Check that it's a TikTok Overview CSV.";
     parseErrorEl.classList.remove("hidden");
-    (document.getElementById("import-btn")! as HTMLButtonElement).disabled = true;
-    (document.getElementById("import-btn")! as HTMLButtonElement).classList.add("opacity-40", "cursor-not-allowed");
+    (importBtn as HTMLButtonElement).disabled = true;
+    importBtn.style.opacity = "0.4";
   } else {
     parseErrorEl.classList.add("hidden");
-    (document.getElementById("import-btn")! as HTMLButtonElement).disabled = false;
-    (document.getElementById("import-btn")! as HTMLButtonElement).classList.remove("opacity-40", "cursor-not-allowed");
+    (importBtn as HTMLButtonElement).disabled = false;
+    importBtn.style.opacity = "";
   }
 
-  // Headline stats
   (document.getElementById("row-count")!).textContent = String(rows.length);
   (document.getElementById("import-count")!).textContent = String(rows.length);
 
@@ -354,32 +348,32 @@ function renderPreview(file: File, text: string) {
     (document.getElementById("date-range")!).textContent = "—";
   }
 
-  // Column badges
+  // Column badges with Forge styling
   const badgesEl = document.getElementById("column-badges")!;
   badgesEl.innerHTML = ALL_METRICS.map(m => {
     const found = detectedMetrics.includes(m.key);
     return found
-      ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-400">
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-muted);color:var(--green);">
            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
            ${m.label}
          </span>`
-      : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-neutral-800 text-xs font-medium text-neutral-600">
+      : `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:var(--surface-3);color:var(--text-3);">
            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 3L7 7M7 3L3 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
            ${m.label}
          </span>`;
   }).join("");
 
-  // Preview table (first 8 rows)
+  // Preview table rows
   const PREVIEW_MAX = 8;
   const tbody = document.getElementById("preview-tbody")!;
   tbody.innerHTML = rows.slice(0, PREVIEW_MAX).map(row =>
-    `<tr class="border-b border-neutral-800/50 last:border-0">
-       <td class="px-3 py-2 text-neutral-300 whitespace-nowrap font-mono">${fmtDate(row.date)}</td>
-       <td class="px-3 py-2 text-right text-white tabular-nums">${fmtNum(row.videoViews)}</td>
-       <td class="px-3 py-2 text-right text-neutral-400 tabular-nums">${fmtNum(row.profileViews)}</td>
-       <td class="px-3 py-2 text-right text-pink-400 tabular-nums">${fmtNum(row.likes)}</td>
-       <td class="px-3 py-2 text-right text-neutral-400 tabular-nums">${fmtNum(row.comments)}</td>
-       <td class="px-3 py-2 text-right text-sky-400 tabular-nums">${fmtNum(row.shares)}</td>
+    `<tr style="border-bottom:1px solid var(--border);">
+       <td style="padding:0.5rem 0.75rem;color:var(--text-2);white-space:nowrap;font-family:'IBM Plex Mono',monospace;">${fmtDate(row.date)}</td>
+       <td style="padding:0.5rem 0.75rem;text-align:right;color:var(--text-1);font-variant-numeric:tabular-nums;">${fmtNum(row.videoViews)}</td>
+       <td style="padding:0.5rem 0.75rem;text-align:right;color:var(--text-2);font-variant-numeric:tabular-nums;">${fmtNum(row.profileViews)}</td>
+       <td style="padding:0.5rem 0.75rem;text-align:right;color:var(--accent);font-variant-numeric:tabular-nums;">${fmtNum(row.likes)}</td>
+       <td style="padding:0.5rem 0.75rem;text-align:right;color:var(--text-2);font-variant-numeric:tabular-nums;">${fmtNum(row.comments)}</td>
+       <td style="padding:0.5rem 0.75rem;text-align:right;color:var(--blue);font-variant-numeric:tabular-nums;">${fmtNum(row.shares)}</td>
      </tr>`
   ).join("");
 
@@ -391,20 +385,16 @@ function renderPreview(file: File, text: string) {
     moreEl.classList.add("hidden");
   }
 
-  // Warnings (parse errors on specific rows)
   const warningsEl = document.getElementById("warnings")!;
   const warningsList = document.getElementById("warnings-list")!;
   if (errors.length > 0) {
     warningsList.innerHTML = errors.slice(0, 5).map(e => `<li>${e}</li>`).join("");
-    if (errors.length > 5) {
-      warningsList.innerHTML += `<li>…and ${errors.length - 5} more</li>`;
-    }
+    if (errors.length > 5) warningsList.innerHTML += `<li>…and ${errors.length - 5} more</li>`;
     warningsEl.classList.remove("hidden");
   } else {
     warningsEl.classList.add("hidden");
   }
 
-  // Unknown columns
   const unknownEl = document.getElementById("unknown-cols")!;
   if (unknownColumns.length > 0) {
     (document.getElementById("unknown-list")!).textContent = unknownColumns.join(", ");
@@ -467,7 +457,6 @@ importBtn.addEventListener("click", async () => {
 
     showStep("done");
   } catch (err: any) {
-    // Go back to preview and show error
     const parseErrorEl = document.getElementById("parse-error")!;
     parseErrorEl.textContent = err?.message ?? "Something went wrong. Please try again.";
     parseErrorEl.classList.remove("hidden");
