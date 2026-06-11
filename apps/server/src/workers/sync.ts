@@ -113,6 +113,11 @@ export async function syncPlatform(name: "tiktok" | "instagram" | "youtube"): Pr
         const resolvedUrl = await resolveTikTokUrl(item.externalUrl!)
         if (resolvedUrl !== item.externalUrl) {
           console.log(`[sync:tiktok] resolved short URL: ${item.externalUrl} → ${resolvedUrl}`)
+          await db
+            .update(contentItems)
+            .set({ externalUrl: resolvedUrl })
+            .where(eq(contentItems.id, item.id))
+          item.externalUrl = resolvedUrl
         }
         const videoId = extractTikTokVideoId(resolvedUrl)
         if (videoId) {
@@ -130,8 +135,7 @@ export async function syncPlatform(name: "tiktok" | "instagram" | "youtube"): Pr
       console.log(`[sync:tiktok] API returned stats for ${statsMap.size} video(s)`)
 
       for (const item of items) {
-        const resolvedUrl = await resolveTikTokUrl(item.externalUrl!)
-        const videoId = extractTikTokVideoId(resolvedUrl)
+        const videoId = extractTikTokVideoId(item.externalUrl!)
         if (!videoId) continue
         const rawStats = statsMap.get(videoId)
         if (!rawStats) {
