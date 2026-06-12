@@ -16,7 +16,6 @@ const HeroSection = z.object({
     subheading: z.string(),
     tagline: z.string().optional().default(""),
     avatarUrl: z.string().optional().default(""),
-    layout: z.enum(["centered", "split"]).optional().default("centered"),
     ctaLabel: z.string(),
     ctaHref: z.string(),
     cta2Label: z.string().optional().default(""),
@@ -35,7 +34,6 @@ const AboutSection = z.object({
     role: z.string().optional().default(""),
     bio: z.string(),
     photoUrl: z.string(),
-    photoPosition: z.enum(["left", "right"]).optional().default("left"),
     highlights: z
       .array(z.object({ label: z.string(), value: z.string() }))
       .optional()
@@ -52,7 +50,6 @@ const SkillsSection = z.object({
   config: z.object({
     title: z.string(),
     description: z.string().optional().default(""),
-    layout: z.enum(["tags", "bars"]).optional().default("tags"),
     skills: z.array(
       z.object({
         name: z.string(),
@@ -69,8 +66,12 @@ const StatsSection = z.object({
   config: z.object({
     title: z.string(),
     description: z.string().optional().default(""),
-    layout: z.enum(["inline", "cards"]).optional().default("inline"),
     statsSource: z.enum(["manual", "analytics"]).optional().default("manual"),
+    statsPeriod: z.enum(["7d", "30d", "90d", "all"]).optional().default("30d"),
+    visibleStats: z
+      .array(z.enum(["videoViews", "likes", "shares", "comments"]))
+      .optional()
+      .default(["videoViews", "likes", "shares", "comments"]),
     stats: z.array(
       z.object({
         number: z.string(),
@@ -88,7 +89,6 @@ const ProjectsSection = z.object({
   config: z.object({
     title: z.string(),
     limit: z.number().int().default(6),
-    layout: z.enum(["grid", "list"]).optional().default("grid"),
     filterType: z
       .enum(["", "video", "article", "podcast", "design"])
       .optional()
@@ -113,6 +113,18 @@ const ContactSection = z.object({
   }),
 });
 
+const AnalyticsSection = z.object({
+  ...envelope,
+  type: z.literal("analytics"),
+  config: z.object({
+    title: z.string().optional().default("My Growth"),
+    metric: z.enum(["videoViews", "likes", "shares", "comments"]).optional().default("videoViews"),
+    period: z.enum(["7d", "30d", "90d", "all"]).optional().default("30d"),
+    showTable: z.boolean().optional().default(false),
+    variant: VARIANT,
+  }),
+});
+
 export const SectionSchema = z.discriminatedUnion("type", [
   HeroSection,
   AboutSection,
@@ -120,6 +132,7 @@ export const SectionSchema = z.discriminatedUnion("type", [
   StatsSection,
   ProjectsSection,
   ContactSection,
+  AnalyticsSection,
 ]);
 
 export const PageConfigSchema = z.array(SectionSchema);

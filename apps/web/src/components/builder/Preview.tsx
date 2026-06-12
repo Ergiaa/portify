@@ -5,6 +5,7 @@ import { SkillsSection } from "./sections/SkillsSection";
 import { StatsSectionLive } from "./sections/StatsSectionLive";
 import { ProjectsSection } from "./sections/ProjectsSection";
 import { ContactSection } from "./sections/ContactSection";
+import { AnalyticsSectionLive } from "./sections/AnalyticsSectionLive";
 
 interface Props {
   sections: SectionConfig[];
@@ -39,6 +40,7 @@ export function Preview({ sections, selectedId, onSelect }: Props) {
             {section.type === "stats" && <StatsSectionLive config={section.config} />}
             {section.type === "projects" && <ProjectsSection config={section.config} />}
             {section.type === "contact" && <ContactSection config={section.config} />}
+            {section.type === "analytics" && <AnalyticsSectionLive config={section.config} />}
           </div>
         ))}
       </div>

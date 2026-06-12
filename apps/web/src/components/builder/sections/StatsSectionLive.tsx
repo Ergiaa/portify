@@ -4,12 +4,23 @@ import { StatsSection } from "./StatsSection";
 
 type StatItem = { number: string; label: string; icon?: string };
 
+type MetricKey = "videoViews" | "likes" | "shares" | "comments";
+
+const METRIC_META: Record<MetricKey, { label: string; icon: string }> = {
+  videoViews: { label: "Video Views", icon: "📺" },
+  likes: { label: "Likes", icon: "❤️" },
+  shares: { label: "Shares", icon: "🔄" },
+  comments: { label: "Comments", icon: "💬" },
+};
+
 interface Props {
   config: {
     title: string;
     description?: string;
     layout?: string;
     statsSource?: "manual" | "analytics";
+    statsPeriod?: "7d" | "30d" | "90d" | "all";
+    visibleStats?: MetricKey[];
     stats: StatItem[];
     variant?: "swiss" | "editorial" | "glass" | "y2k" | "bento";
   };
@@ -24,17 +35,28 @@ function fmtNum(n: number): string {
 export function StatsSectionLive({ config }: Props) {
   const [analyticsStats, setAnalyticsStats] = useState<StatItem[] | null>(null);
 
+  const period = config.statsPeriod ?? "30d";
+  const visible = config.visibleStats ?? (["videoViews", "likes", "shares", "comments"] as MetricKey[]);
+
   useEffect(() => {
     if (config.statsSource !== "analytics") return;
-    adminOrpc.metrics.summary().then((data) => {
-      setAnalyticsStats([
-        { number: fmtNum(data.videoViews), label: "Video Views", icon: "📺" },
-        { number: fmtNum(data.likes), label: "Likes", icon: "❤️" },
-        { number: fmtNum(data.shares), label: "Shares", icon: "🔄" },
-        { number: fmtNum(data.comments), label: "Comments", icon: "💬" },
-      ]);
+    adminOrpc.metrics.summary({ period }).then((data) => {
+      const all: Record<MetricKey, number> = {
+        videoViews: data.videoViews,
+        likes: data.likes,
+        shares: data.shares,
+        comments: data.comments,
+      };
+      const items = (Object.keys(all) as MetricKey[])
+        .filter((k) => visible.includes(k))
+        .map((k) => ({
+          number: fmtNum(all[k]),
+          label: METRIC_META[k].label,
+          icon: METRIC_META[k].icon,
+        }));
+      setAnalyticsStats(items);
     }).catch(() => {});
-  }, [config.statsSource]);
+  }, [config.statsSource, period, visible.join(",")]);
 
   return (
     <StatsSection
