@@ -17,18 +17,26 @@ function parseStat(s: { number: string; to?: number; suffix?: string }) {
   return { to: parseFloat(m[1]), suffix: m[2] };
 }
 
-export function StatsBento({ config }: Props) {
-  const colors = [
-    "linear-gradient(160deg,#ff8a4d,#c2386e)",
-    "#0d0d0f",
-    "linear-gradient(160deg,#76e07a,#1e8f4a)",
-    "linear-gradient(160deg,#7eb6ff,#3a4fd6)",
-  ];
+const skin = {
+  bg: "#f1f0ea", panel: "#ffffff", ink: "#16161a", sub: "#54545c", mute: "#8a8a90",
+  accent: "#16161a", line: "#e5e3db", soft: "#e9e8e1",
+  fontBody: "'Geist', sans-serif", fontHead: "'Geist', sans-serif", fontMono: "'JetBrains Mono', monospace",
+  radius: 20,
+};
 
+const gradientTiles = [
+  "linear-gradient(155deg,#ff9a52,#e0476b)",
+  "#16161a",
+  "linear-gradient(155deg,#54cf78,#1e8f4a)",
+  "linear-gradient(155deg,#7eb6ff,#3a4fd6)",
+];
+const tileInk = ["#fff", "#fff", "#0a2410", "#fff"];
+
+export function StatsBento({ config }: Props) {
   return (
     <div style={{
-      width: "100%", height: "100%", background: "#f5f4f0",
-      fontFamily: "Geist, sans-serif", padding: 24, boxSizing: "border-box",
+      width: "100%", height: "100%", background: skin.bg,
+      fontFamily: skin.fontBody, padding: 24, boxSizing: "border-box",
       display: "grid", gridTemplateColumns: `repeat(${config.stats.length}, 1fr)`, gap: 14,
     }}>
       <div style={{
@@ -36,32 +44,31 @@ export function StatsBento({ config }: Props) {
       }}>
         <div>
           <p style={{
-            fontFamily: "JetBrains Mono, monospace", fontSize: 11, color: "#888",
+            fontFamily: skin.fontMono, fontSize: 11, color: skin.mute,
             textTransform: "uppercase", letterSpacing: "0.1em", margin: 0,
           }}>{`> stats.live`}</p>
-          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "4px 0 0" }}>
+          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", margin: "4px 0 0", color: skin.ink }}>
             {config.title}
           </h2>
         </div>
-        <span style={{ fontSize: 12, color: "#888", fontFamily: "JetBrains Mono, monospace" }}>
+        <span style={{ fontSize: 12, color: skin.mute, fontFamily: skin.fontMono }}>
           {new Date().toLocaleDateString("en-US")} · auto-sync
         </span>
       </div>
       {config.stats.map((s, i) => {
         const { to, suffix } = parseStat(s);
-        const isDark = i === 1;
+        const bg = gradientTiles[i % gradientTiles.length];
+        const fg = tileInk[i % tileInk.length];
         return (
           <div key={i} style={{
-            background: colors[i % colors.length],
-            color: isDark ? "#fff" : (i === 0 || i === 3 ? "#fff" : "#0d2010"),
-            borderRadius: 22, padding: 20,
+            background: bg, color: fg,
+            borderRadius: skin.radius, padding: 20,
             display: "flex", flexDirection: "column", justifyContent: "space-between",
-            border: isDark ? "1px solid #232328" : "none",
             minHeight: 200, position: "relative", overflow: "hidden",
           }}>
             <div style={{
               display: "flex", justifyContent: "space-between",
-              fontSize: 11, opacity: 0.85, fontFamily: "JetBrains Mono, monospace",
+              fontSize: 11, opacity: 0.85, fontFamily: skin.fontMono,
               textTransform: "uppercase", letterSpacing: "0.1em",
             }}>
               <span>{s.icon} {s.label}</span>
