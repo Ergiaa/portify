@@ -11,7 +11,6 @@ interface Props {
   config: {
     title: string;
     description?: string;
-    layout?: string;
     skills: { name: string; level: number }[];
     variant?: Variant;
   };

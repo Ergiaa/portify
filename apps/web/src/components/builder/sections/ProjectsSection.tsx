@@ -23,7 +23,6 @@ interface Props {
   config: {
     title: string;
     limit: number;
-    layout?: "grid" | "list";
     filterType?: string;
     viewAllLabel?: string;
     viewAllHref?: string;

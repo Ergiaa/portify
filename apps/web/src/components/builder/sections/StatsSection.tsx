@@ -12,7 +12,6 @@ interface Props {
   config: {
     title: string;
     description?: string;
-    layout?: string;
     statsSource?: "manual" | "analytics";
     stats: StatItem[];
     variant?: Variant;

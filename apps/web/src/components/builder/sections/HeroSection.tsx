@@ -13,7 +13,6 @@ interface Props {
     subheading: string;
     tagline?: string;
     avatarUrl?: string;
-    layout?: "centered" | "split";
     ctaLabel: string;
     ctaHref: string;
     cta2Label?: string;

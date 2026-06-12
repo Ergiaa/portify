@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { PUBLIC_SERVER_URL } from "astro:env/client";
 import type { SectionConfig } from "./types";
 
 interface Props {
@@ -9,6 +11,82 @@ interface Props {
 const inp = "w-full px-3 py-2 text-sm bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500";
 const lbl = "block text-xs font-medium text-neutral-400 mb-1";
 const fld = "mb-4";
+
+function getToken() {
+  return (
+    document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("auth_token="))
+      ?.split("=")[1] ?? ""
+  );
+}
+
+function ImageUploadField({
+  label,
+  value,
+  onChange,
+  aspect = "square",
+}: {
+  label: string;
+  value: string;
+  onChange: (url: string) => void;
+  aspect?: "square" | "portrait";
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch(`${PUBLIC_SERVER_URL}/uploads/thumbnail`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: fd,
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      onChange(data.url!);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  return (
+    <div className={fld}>
+      <label className={lbl}>{label}</label>
+      {value && (
+        <div className={`w-full mb-2 bg-neutral-800 rounded-lg overflow-hidden ${aspect === "portrait" ? "aspect-[3/4]" : "aspect-square"}`}>
+          <img src={value} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="flex gap-2">
+        <input
+          className={inp}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Paste URL or upload…"
+        />
+        <label className={`shrink-0 flex items-center justify-center w-10 h-[38px] rounded-lg border border-neutral-700 cursor-pointer transition-colors text-sm ${uploading ? "bg-neutral-800 text-neutral-500 cursor-not-allowed" : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"}`}>
+          {uploading ? (
+            <span className="animate-spin text-xs">⟳</span>
+          ) : (
+            <span>↑</span>
+          )}
+          <input type="file" accept="image/*" className="hidden" onChange={handleFile} disabled={uploading} />
+        </label>
+      </div>
+      {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+    </div>
+  );
+}
 
 function SegmentedControl({
   options,
@@ -61,16 +139,14 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             <input className={inp} value={section.config.ctaLabel} onChange={(e) => u({ ctaLabel: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>CTA Link</label>
             <input className={inp} value={section.config.ctaHref} onChange={(e) => u({ ctaHref: e.target.value })} /></div>
-          <div className={fld}><label className={lbl}>Layout</label>
-            <SegmentedControl
-              options={["centered", "split"]}
-              value={section.config.layout ?? "centered"}
-              onChange={(v) => u({ layout: v })}
-            /></div>
           <div className={fld}><label className={lbl}>Tagline (above heading)</label>
             <input className={inp} value={section.config.tagline ?? ""} onChange={(e) => u({ tagline: e.target.value })} /></div>
-          <div className={fld}><label className={lbl}>Avatar URL</label>
-            <input className={inp} value={section.config.avatarUrl ?? ""} onChange={(e) => u({ avatarUrl: e.target.value })} /></div>
+          <ImageUploadField
+            label="Avatar"
+            value={section.config.avatarUrl ?? ""}
+            onChange={(url) => u({ avatarUrl: url })}
+            aspect="square"
+          />
           <div className={fld}><label className={lbl}>Secondary CTA Label</label>
             <input className={inp} value={section.config.cta2Label ?? ""} onChange={(e) => u({ cta2Label: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Secondary CTA Link</label>
@@ -95,14 +171,12 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
           <div className={fld}><label className={lbl}>Bio</label>
             <textarea className={`${inp} min-h-[120px] resize-y`} value={section.config.bio}
               onChange={(e) => u({ bio: e.target.value })} /></div>
-          <div className={fld}><label className={lbl}>Photo URL</label>
-            <input className={inp} value={section.config.photoUrl} onChange={(e) => u({ photoUrl: e.target.value })} /></div>
-          <div className={fld}><label className={lbl}>Photo Position</label>
-            <SegmentedControl
-              options={["left", "right"]}
-              value={section.config.photoPosition ?? "left"}
-              onChange={(v) => u({ photoPosition: v })}
-            /></div>
+          <ImageUploadField
+            label="Photo"
+            value={section.config.photoUrl}
+            onChange={(url) => u({ photoUrl: url })}
+            aspect="portrait"
+          />
           <div className={fld}><label className={lbl}>CTA Label</label>
             <input className={inp} value={section.config.ctaLabel ?? ""} onChange={(e) => u({ ctaLabel: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>CTA Link</label>
@@ -139,12 +213,6 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title} onChange={(e) => u({ title: e.target.value })} /></div>
-          <div className={fld}><label className={lbl}>Layout</label>
-            <SegmentedControl
-              options={["tags", "bars"]}
-              value={section.config.layout ?? "tags"}
-              onChange={(v) => u({ layout: v })}
-            /></div>
           <div className={fld}><label className={lbl}>Description</label>
             <input className={inp} value={section.config.description ?? ""} onChange={(e) => u({ description: e.target.value })} /></div>
           <div className={fld}>
@@ -182,12 +250,6 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             </select></div>
           <div className={fld}><label className={lbl}>Section Title</label>
             <input className={inp} value={section.config.title} onChange={(e) => u({ title: e.target.value })} /></div>
-          <div className={fld}><label className={lbl}>Layout</label>
-            <SegmentedControl
-              options={["inline", "cards"]}
-              value={section.config.layout ?? "inline"}
-              onChange={(v) => u({ layout: v })}
-            /></div>
           <div className={fld}><label className={lbl}>Description</label>
             <input className={inp} value={section.config.description ?? ""} onChange={(e) => u({ description: e.target.value })} /></div>
           <div className={fld}><label className={lbl}>Data source</label>
@@ -197,9 +259,42 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
               onChange={(v) => u({ statsSource: v })}
             /></div>
           {(section.config.statsSource ?? "manual") === "analytics" ? (
-            <p className="text-xs text-neutral-500 mb-4 leading-relaxed">
-              Stats will be pulled live from your TikTok analytics data (video views, likes, shares, comments).
-            </p>
+            <div className="mb-4 space-y-3">
+              <div className={fld}>
+                <label className={lbl}>Time period</label>
+                <SegmentedControl
+                  options={["7d", "30d", "90d", "all"]}
+                  value={section.config.statsPeriod ?? "30d"}
+                  onChange={(v) => u({ statsPeriod: v })}
+                />
+              </div>
+              <div className={fld}>
+                <label className={lbl}>Visible metrics</label>
+                <div className="space-y-2">
+                  {(["videoViews", "likes", "shares", "comments"] as const).map((key) => {
+                    const labels: Record<string, string> = { videoViews: "Video Views", likes: "Likes", shares: "Shares", comments: "Comments" };
+                    const visible = section.config.visibleStats ?? ["videoViews", "likes", "shares", "comments"];
+                    const checked = visible.includes(key);
+                    return (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked
+                              ? visible.filter((v) => v !== key)
+                              : [...visible, key];
+                            if (next.length > 0) u({ visibleStats: next });
+                          }}
+                          className="accent-indigo-500"
+                        />
+                        <span className="text-sm text-neutral-300">{labels[key]}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           ) : (
           <div className={fld}>
             <label className={lbl}>Stats</label>
@@ -232,12 +327,6 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
           <div className={fld}><label className={lbl}>Max items</label>
             <input type="number" min={1} max={24} className={inp} value={section.config.limit}
               onChange={(e) => u({ limit: parseInt(e.target.value, 10) || 6 })} /></div>
-          <div className={fld}><label className={lbl}>Layout</label>
-            <SegmentedControl
-              options={["grid", "list"]}
-              value={section.config.layout ?? "grid"}
-              onChange={(v) => u({ layout: v })}
-            /></div>
           <div className={fld}><label className={lbl}>Filter by type</label>
             <select className={inp} value={section.config.filterType ?? ""} onChange={(e) => u({ filterType: e.target.value })}>
               <option value="">All types</option>
@@ -283,6 +372,38 @@ export function SectionEditor({ section, onUpdate, onClose }: Props) {
             ))}
             <button className="text-xs text-indigo-400 hover:text-indigo-300"
               onClick={() => u({ socials: [...section.config.socials, { platform: "", url: "" }] })}>+ Add social</button>
+          </div>
+        </>}
+        {section.type === "analytics" && <>
+          <div className={fld}><label className={lbl}>Visual style</label>
+            <select className={inp} value={section.config.variant ?? "swiss"} onChange={(e) => u({ variant: e.target.value })}>
+              {["swiss", "editorial", "glass", "y2k", "bento"].map((v) => <option key={v} value={v}>{v}</option>)}
+            </select></div>
+          <div className={fld}><label className={lbl}>Section Title</label>
+            <input className={inp} value={section.config.title ?? "My Growth"} onChange={(e) => u({ title: e.target.value })} /></div>
+          <div className={fld}><label className={lbl}>Metric</label>
+            <select className={inp} value={section.config.metric ?? "videoViews"} onChange={(e) => u({ metric: e.target.value })}>
+              <option value="videoViews">Video Views</option>
+              <option value="likes">Likes</option>
+              <option value="shares">Shares</option>
+              <option value="comments">Comments</option>
+            </select></div>
+          <div className={fld}><label className={lbl}>Time period</label>
+            <SegmentedControl
+              options={["7d", "30d", "90d", "all"]}
+              value={section.config.period ?? "30d"}
+              onChange={(v) => u({ period: v })}
+            /></div>
+          <div className={fld}>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={section.config.showTable ?? false}
+                onChange={(e) => u({ showTable: e.target.checked })}
+                className="accent-indigo-500"
+              />
+              <span className="text-sm text-neutral-300">Show daily data table</span>
+            </label>
           </div>
         </>}
       </div>

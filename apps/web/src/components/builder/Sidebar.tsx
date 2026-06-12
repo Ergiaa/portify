@@ -11,6 +11,7 @@ const SECTION_TYPES = [
   { type: "stats", label: "Stats", icon: "▦" },
   { type: "projects", label: "Projects", icon: "⊟" },
   { type: "contact", label: "Contact", icon: "◉" },
+  { type: "analytics", label: "Analytics", icon: "📊" },
 ] as const;
 
 const DEFAULTS: Record<string, object> = {
@@ -19,7 +20,6 @@ const DEFAULTS: Record<string, object> = {
     subheading: "I review films and tell stories.",
     tagline: "Hey there, I'm",
     avatarUrl: "",
-    layout: "centered",
     ctaLabel: "Hire me",
     ctaHref: "/hire-me",
     cta2Label: "See my work",
@@ -32,7 +32,6 @@ const DEFAULTS: Record<string, object> = {
     role: "",
     bio: "Write something about yourself.",
     photoUrl: "",
-    photoPosition: "left",
     highlights: [],
     ctaLabel: "",
     ctaHref: "",
@@ -40,7 +39,6 @@ const DEFAULTS: Record<string, object> = {
   skills: {
     title: "Skills",
     description: "",
-    layout: "tags",
     skills: [
       { name: "Design", level: 85 },
       { name: "Development", level: 70 },
@@ -49,13 +47,11 @@ const DEFAULTS: Record<string, object> = {
   stats: {
     title: "By the numbers",
     description: "",
-    layout: "inline",
     stats: [{ number: "50+", label: "Projects", icon: "🚀" }],
   },
   projects: {
     title: "My Work",
     limit: 6,
-    layout: "grid",
     filterType: "",
     viewAllLabel: "",
     viewAllHref: "",
@@ -67,6 +63,12 @@ const DEFAULTS: Record<string, object> = {
     email: "",
     phone: "",
     socials: [],
+  },
+  analytics: {
+    title: "My Growth",
+    metric: "videoViews",
+    period: "30d",
+    showTable: false,
   },
 };
 

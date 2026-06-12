@@ -14,7 +14,6 @@ interface Props {
     role?: string;
     bio: string;
     photoUrl: string;
-    photoPosition?: "left" | "right";
     highlights?: { label: string; value: string }[];
     ctaLabel?: string;
     ctaHref?: string;
